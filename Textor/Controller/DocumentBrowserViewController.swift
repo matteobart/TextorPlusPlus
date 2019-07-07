@@ -114,7 +114,33 @@ extension DocumentBrowserViewController: UIDocumentBrowserViewControllerDelegate
 
 	func documentBrowser(_ controller: UIDocumentBrowserViewController, didRequestDocumentCreationWithHandler importHandler: @escaping (URL?, UIDocumentBrowserViewController.ImportMode) -> Void) {
 		
-		let newName = DocumentManager.shared.availableFileName(forProposedName: "Untitled")
+		//1. Create the alert controller.
+		let alert = UIAlertController(title:"Filename", message: "Specify a file extension, otherwise defaults .txt", preferredStyle: .alert)
+		
+		//2. Add the text field. You can configure it however you need.
+		alert.addTextField { (textField) in
+			textField.placeholder = "quicksort.py"
+		}
+		
+		
+		// 3. Grab the value from the text field, and print it when the user clicks OK.
+		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+			let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+			var userChoosenFilename = textField?.text ?? "Untitled.txt"
+			if userChoosenFilename == "" {
+				userChoosenFilename = "Untitled.txt"
+			}
+			self.finish(controller, filename: userChoosenFilename, didRequestDocumentCreationWithHandler: importHandler)
+
+		}))
+		
+		// 4. Present the alert.
+		self.present(alert, animated: true, completion: nil)
+	}
+	//simply an extension of the previous function
+	func finish(_ controller: UIDocumentBrowserViewController, filename: String ,didRequestDocumentCreationWithHandler importHandler: @escaping (URL?, UIDocumentBrowserViewController.ImportMode) -> Void) {
+		
+		let newName = DocumentManager.shared.availableFileName(forProposedName: filename)
 		
 		guard let url = DocumentManager.shared.cacheUrl(for: newName) else {
 			importHandler(nil, .none)

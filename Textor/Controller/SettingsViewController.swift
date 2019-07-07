@@ -14,7 +14,9 @@ class SettingsViewController: UITableViewController {
     @IBOutlet weak var fontSizeStepper: UIStepper!
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var darkThemeSwitch: UISwitch!
-
+	@IBOutlet weak var codingModeSwitch: UISwitch!
+	
+	
     override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -22,6 +24,7 @@ class SettingsViewController: UITableViewController {
         fontSizeLabel.text = "\(Int(fontSizeStepper.value))"
 
         darkThemeSwitch.isOn = UserDefaultsController.shared.isDarkMode
+		codingModeSwitch.isOn = UserDefaultsController.shared.isCodingMode
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(didChangeTheme), name: .themeChanged, object: nil)
 		
@@ -52,6 +55,11 @@ class SettingsViewController: UITableViewController {
         NotificationCenter.default.post(name: .themeChanged, object: nil)
     }
 
+	
+	@IBAction func codingModeChanged(_ sender: UISwitch) {
+		UserDefaultsController.shared.isCodingMode = sender.isOn
+	}
+	
 	@objc
 	func didChangeTheme() {
 

@@ -23,8 +23,9 @@ class FontPickerViewController: UITableViewController {
 		for fontFamily in fontFamilys {
 			allFonts += UIFont.fontNames(forFamilyName: fontFamily)
 		}
-		
-		return allFonts.sorted()
+		var ret = allFonts.sorted()
+		ret.insert("Menlo-Regular", at: 0)
+		return ret
 	}()
 	var filteredFonts = [String]()
 	
@@ -36,6 +37,7 @@ class FontPickerViewController: UITableViewController {
 		
 		self.searchController.searchResultsUpdater = self
 		self.navigationItem.searchController = searchController
+		self.navigationItem.hidesSearchBarWhenScrolling = false
 		self.definesPresentationContext = true
     }
 	

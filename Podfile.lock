@@ -1,16 +1,20 @@
 PODS:
+  - Highlightr (2.0.1)
   - SimulatorStatusMagic (2.1)
 
 DEPENDENCIES:
+  - Highlightr
   - SimulatorStatusMagic (~> 2.1)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
+    - Highlightr
     - SimulatorStatusMagic
 
 SPEC CHECKSUMS:
+  Highlightr: 65655134dd0d5e1320afdd8a9d880c9e9dc0b437
   SimulatorStatusMagic: 481558caf2b9ccb2ceba2cc193728d4db3dcac07
 
-PODFILE CHECKSUM: abc4475ab98aeea39fa03e9019a40edc57c83a57
+PODFILE CHECKSUM: 08fc74ef8719822036a1a1b56e12c98223297f84
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

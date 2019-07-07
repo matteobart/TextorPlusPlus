@@ -31,7 +31,27 @@ class UserDefaultsController {
 			userDefaults.set(newValue.rawValue, forKey: "selectedTheme")
 		}
 	}
+	
+	var currentSyntaxLanguage: String? {
+		get {
+			return userDefaults.string(forKey: "syntaxLanguage")
+		}
+		
+		set {
+			userDefaults.set(newValue, forKey: "syntaxLanguage")
+		}
+	}
 
+	var isCodingMode: Bool {
+		get {
+			return userDefaults.bool(forKey: "codeMode")
+		}
+		
+		set {
+			userDefaults.set(newValue, forKey: "codeMode")
+		}
+	}
+	
 	var isDarkMode: Bool {
 		get {
 			return theme == .dark

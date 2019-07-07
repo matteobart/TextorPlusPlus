@@ -11,13 +11,28 @@ import Foundation
 extension String {
 
 	/// Name without extension
-	func fileName() -> String {
-
-		if let fileNameWithoutExtension = NSURL(fileURLWithPath: self).deletingPathExtension?.lastPathComponent {
-			return fileNameWithoutExtension
-		} else {
-			return ""
-		}
+	func getFileName() -> String {
+		let split = self.split(separator: ".", maxSplits: 1)
+		print (split.first!.description)
+		return split.first?.description ?? ""
+		
+//		if let fileNameWithoutExtension = NSURL(fileURLWithPath: self).deletingPathExtension?.lastPathComponent {
+//			print(fileNameWithoutExtension)
+//			return fileNameWithoutExtension
+//		} else {
+//			return ""
+//		}
+	}
+	
+	func hasExtension()->Bool {
+		return self.contains(".") && self.suffix(1) != "."
+	}
+	
+	func getExtension()->String {
+		
+		let split = self.split(separator: ".", maxSplits: 1)
+		print(split.last!.description)
+		return split.last?.description ?? ""
 	}
 
 }
@@ -28,9 +43,8 @@ class DocumentManager {
 
 	let fileManager: FileManager
 
-	// All created documents are .txt
-	// (might change in future)
-	private var fileExtension: String {
+	//when not specified defaults to txt file
+	private var defaultFileExtension: String {
 		return "txt"
 	}
 
@@ -68,8 +82,7 @@ class DocumentManager {
 		return ubiquityContainerURL?.appendingPathComponent("Documents")
 	}
 
-	private var activeDocumentsFolderURL: URL {
-
+	private var activeDocumentsFolderURL: URL { 
 		if let cloudDocumentsURL = cloudDocumentsURL {
 			return cloudDocumentsURL
 		} else {
@@ -83,7 +96,10 @@ class DocumentManager {
 
 	func cacheUrl(for fileName: String) -> URL? {
 
-		let docURL = cachesURL.appendingPathComponent(fileName).appendingPathExtension(fileExtension)
+		let docURL = fileName.hasExtension() ?
+		cachesURL.appendingPathComponent(fileName.getFileName()).appendingPathExtension(fileName.getExtension()):
+		cachesURL.appendingPathComponent(fileName).appendingPathExtension(defaultFileExtension)
+		
 
 		return docURL
 	}
@@ -92,8 +108,10 @@ class DocumentManager {
 
 		let baseURL = activeDocumentsFolderURL
 
-		let docURL = baseURL.appendingPathComponent(fileName).appendingPathExtension(fileExtension)
-
+		let docURL = fileName.hasExtension() ?
+			baseURL.appendingPathComponent(fileName.getFileName()).appendingPathExtension(fileName.getExtension()):
+			baseURL.appendingPathComponent(fileName).appendingPathExtension(defaultFileExtension)
+		
 		return docURL
 	}
 
@@ -101,18 +119,22 @@ class DocumentManager {
 
 extension DocumentManager {
 
-	/// - Parameter proposedName: Without extension
+	/// - Parameter proposedName: With extension
 	func availableFileName(forProposedName proposedName: String) -> String {
 
-		let files = fileList().map { $0.fileName().lowercased() }
+		let files = fileList()//.map { $0.getFileName().lowercased() }
 
 		var availableFileName = proposedName
-
+		
 		var i = 0
-		while files.contains(availableFileName.lowercased()) {
+		while files.contains(availableFileName) {
 
 			i += 1
-			availableFileName = "\(proposedName) \(i)"
+			availableFileName = proposedName.getFileName() + String(i)
+			
+			if proposedName.hasExtension(){
+				availableFileName += "." + proposedName.getExtension()
+			}
 
 		}
 
@@ -127,8 +149,7 @@ extension DocumentManager {
 		guard let contents = try? self.fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: [.contentModificationDateKey], options: [.skipsHiddenFiles]) else {
 			return []
 		}
-
-		let files = contents.map({ $0.lastPathComponent }).filter({ $0.hasSuffix(".\(fileExtension)") })
+		let files = contents.map({ $0.lastPathComponent })
 
 		return files
 	}
