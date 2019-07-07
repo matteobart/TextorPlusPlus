@@ -18,16 +18,8 @@ import UIKit
 class ToolsTableViewController: UITableViewController {
 	//@IBOutlet weak var navBar: UINavigationBar!
 	
-	var availableTools = [
-		("Find", UIImage.init(named: "Find")),
-		("Find & Replace", UIImage.init(named: "FindNReplace")),
-		("Tabs to Spaces", UIImage.init(named: "Tabs2Spaces")),
-		("Spaces to Tabs", UIImage.init(named: "Spaces2Tabs")),
-		("Convert Curlys to Quotes", UIImage.init(named: "Curlys2Quotes")),
-		("Choose Language for Syntax", UIImage.init()),
-		("Tab Mode/Space Mode", UIImage.init())
-		
-	]
+	@IBOutlet weak var currentLanguage: UILabel!
+	var numberOfSections: Int = 1
 	
 	@IBAction func doneButtonPressed(_ sender: UIBarButtonItem) {
 		self.dismiss(animated: true) {
@@ -36,8 +28,12 @@ class ToolsTableViewController: UITableViewController {
 	}
 	override func viewDidLoad() {
         super.viewDidLoad()
+		if UserDefaultsController.shared.isCodingMode {
+			numberOfSections = 2 //show the other section
+		}
 		updateTheme()
-		self.navigationController?.setNavigationBarHidden(false, animated: false)
+		
+		currentLanguage.text = "Current Language: " + (UserDefaultsController.shared.currentSyntaxLanguage ?? "")
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -54,24 +50,41 @@ class ToolsTableViewController: UITableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return availableTools.count
+        return numberOfSections
     }
 	
+	override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+		if (indexPath.section == 1 && indexPath.item == 1) { //spacing section
+			return false
+		}
+		return true
+	}
+
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let num = indexPath.item
-		if num == 5 {
+		
+		switch (indexPath.section, indexPath.item) {
+		case (0, 0): //Find
+			print("Find")
+		case (0, 1): //Find & Replace
+			print("FindN")
+		case (1, 0): //Current Language
 			let langVC = self.storyboard!.instantiateViewController(withIdentifier: "SyntaxViewController")
 			
 			self.show(langVC, sender: nil)
+		case (1, 1): //spacing
+			print("Spacing")
+		case (1, 2): //convert tabs to spaces
+			print("Convert")
+		case (1, 3): //convert spaces to tabs
+			print("Conver")
+		case (1, 4): //conver curly to quotes
+			print("Convert")
+		default:
+			print("No selection")
 		}
 	}
 
-	
+	/*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToolCell", for: indexPath) as! ToolTableViewCell
 		let index = indexPath.item
@@ -80,9 +93,9 @@ class ToolsTableViewController: UITableViewController {
         // Configure the cell...
 
         return cell
-    }
+    }*/
 	
-	
+	//THEME
 	func updateTheme() {
 		
 		let theme = UserDefaultsController.shared.theme
@@ -94,14 +107,15 @@ class ToolsTableViewController: UITableViewController {
 			//navBar.barStyle = .default
 			tableView.separatorColor = .gray
 			
+			
 		case .dark:
+			
 			tableView.backgroundColor = .darkBackgroundColor
-			//navBar.barStyle = .blackTranslucent
 			navigationController?.navigationBar.barStyle = .black
 			tableView.separatorColor = UIColor(white: 0.2, alpha: 1)
 			
+			
 		}
-		
 		for cell in tableView.visibleCells {
 			updateTheme(for: cell)
 		}
@@ -133,9 +147,20 @@ class ToolsTableViewController: UITableViewController {
 		}
 		
 	}
-
-
-
+	
+	//MORE THEME SETTINGS (DARK MODE SETTINGS)
+	override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		if let header = view as? UITableViewHeaderFooterView {
+			if UserDefaultsController.shared.isDarkMode {
+				header.textLabel?.textColor = .white
+				
+			} else {
+				header.textLabel?.textColor = .black
+			}
+		}
+	}
+	//END
+	
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

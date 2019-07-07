@@ -24,7 +24,18 @@ class FontPickerViewController: UITableViewController {
 			allFonts += UIFont.fontNames(forFamilyName: fontFamily)
 		}
 		var ret = allFonts.sorted()
-		ret.insert("Menlo-Regular", at: 0)
+		//have all the fonts sorted
+		
+		//add their currently selected font first
+		let add = UserDefaultsController.shared.font
+		ret = ret.filter {$0 != add && $0 != "Menlo-Regular"}
+		ret.insert(add, at: 0)
+		
+		//as well as the default font
+		if add != "Menlo-Regular" {
+			ret.insert("Menlo-Regular", at: 1)
+		}
+		
 		return ret
 	}()
 	var filteredFonts = [String]()

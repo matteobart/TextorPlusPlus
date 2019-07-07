@@ -19,8 +19,15 @@ class SytanxTableViewController: UITableViewController {
 	}()
 	
 	let languages: [String] = {
-		var ret = Highlightr.init()!.supportedLanguages().sorted()
+		var ret = Highlightr.init()!.supportedLanguages()
+		ret.append("C") //for some reason C is missing
+		ret = ret.sorted()
+		
 		ret.insert("No Highlighting", at: 0) //if this changes! UPDATE IT AS WELL BELOW
+		if let add = UserDefaultsController.shared.currentSyntaxLanguage {
+			ret = ret.filter {$0 != add}
+			ret.insert(add, at: 0)
+		}
 		return ret
 	}()
 	
