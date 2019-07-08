@@ -59,7 +59,8 @@ class DocumentManager {
 		}
 
 	}
-
+	
+	//CHANGE?
 	private let ICLOUD_IDENTIFIER = "iCloud.com.silverfox.plaintextedit"
 
 	private var localDocumentsURL: URL {

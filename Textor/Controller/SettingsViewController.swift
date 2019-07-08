@@ -15,6 +15,7 @@ class SettingsViewController: UITableViewController {
     @IBOutlet weak var fontSizeLabel: UILabel!
     @IBOutlet weak var darkThemeSwitch: UISwitch!
 	@IBOutlet weak var codingModeSwitch: UISwitch!
+	@IBOutlet weak var fontNameLabel: UILabel!
 	
 	
     override func viewDidLoad() {
@@ -22,13 +23,23 @@ class SettingsViewController: UITableViewController {
 		
 		fontSizeStepper.value = Double(UserDefaultsController.shared.fontSize)
         fontSizeLabel.text = "\(Int(fontSizeStepper.value))"
-
+		
         darkThemeSwitch.isOn = UserDefaultsController.shared.isDarkMode
 		codingModeSwitch.isOn = UserDefaultsController.shared.isCodingMode
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(didChangeTheme), name: .themeChanged, object: nil)
 		
 		updateTheme()
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		fontNameLabel.text = UserDefaultsController.shared.font
+		if let font =  UIFont(name: fontNameLabel.text!, size: 17) {
+			fontNameLabel.font = font
+
+		}
 	}
 
 	override func viewWillLayoutSubviews() {
@@ -138,22 +149,23 @@ class SettingsViewController: UITableViewController {
 
 			if let year = components.year {
 
-				let startYear = 2018
+				let startYear = 2019
 
-				let copyrightText: String
+				var copyrightText: String =  "Textor++ v\(version) (build \(build)) "
 
 				if year == startYear {
-
-					copyrightText = "© \(startYear) Silver Fox. Textor v\(version) (build \(build))"
+					
+					copyrightText += "© \(startYear) Matteo Bartalini."
+					//copyrightText += "\n© 2018 Silver Fox. Textor"
 
 				} else {
-
-					copyrightText = "© \(startYear)-\(year) Silver Fox. Textor v\(version) (build \(build))"
+					copyrightText = "© 2019-\(year) Matteo Bartalini.\n"
+					//copyrightText += "© 2018 Silver Fox. Textor"// v\(version) (build \(build))"
 
 				}
 
 				footer?.textLabel?.text = copyrightText
-
+				
 			}
 
 		}
@@ -171,15 +183,13 @@ class SettingsViewController: UITableViewController {
 			switch indexPath.row {
 			case 0:
 				// Review on App Store
+				//CHANGE
 				let appId = "1330406995"
 				url = "itms-apps://itunes.apple.com/us/app/textor/id\(appId)?action=write-review"
 			case 1:
 				// GitHub
-				url = "https://github.com/louisdh/textor"
+				url = "https://github.com/matteobart/TextorPlusPlus"
 			case 2:
-				// Twitter
-				url = "https://twitter.com/LouisDhauwe"
-			case 3:
 				// Contact Us
 				url = nil
 
@@ -193,7 +203,7 @@ class SettingsViewController: UITableViewController {
 					self.showSendMailErrorAlert()
 
 				}
-			case 5:
+			case 4:
 				// Font picker
 				url = nil
 				
@@ -204,7 +214,7 @@ class SettingsViewController: UITableViewController {
 			}
 
 			if let urlString = url, let url = URL(string: urlString) {
-				UIApplication.shared.open((url), options: [:], completionHandler: nil)
+				UIApplication.shared.open((url), options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]), completionHandler: nil)
 			}
 		default: return
 		}
@@ -215,7 +225,7 @@ class SettingsViewController: UITableViewController {
 		let mailComposerVC = MFMailComposeViewController()
 		mailComposerVC.mailComposeDelegate = self
 
-		mailComposerVC.setToRecipients(["support@silverfox.be"])
+		mailComposerVC.setToRecipients(["theofffeed@gmail.com"])
 
 		let version = Bundle.main.version
 		let build = Bundle.main.build
@@ -230,7 +240,7 @@ class SettingsViewController: UITableViewController {
 
 
 		----------
-		App: Textor \(version) (build \(build))
+		App: Textor++ \(version) (build \(build))
 		Device: \(deviceModel) (\(systemName) \(systemVersion))
 
 		"""
@@ -284,4 +294,9 @@ extension SettingsViewController: MFMailComposeViewControllerDelegate {
 
 	}
 
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

@@ -53,15 +53,9 @@ class ToolsTableViewController: UITableViewController {
         return numberOfSections
     }
 	
-	override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-		if (indexPath.section == 1 && indexPath.item == 1) { //spacing section
-			return false
-		}
-		return true
-	}
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		
+		tableView.deselectRow(at: indexPath, animated: true)
 		switch (indexPath.section, indexPath.item) {
 		case (0, 0): //Find
 			print("Find")
@@ -69,7 +63,6 @@ class ToolsTableViewController: UITableViewController {
 			print("FindN")
 		case (1, 0): //Current Language
 			let langVC = self.storyboard!.instantiateViewController(withIdentifier: "SyntaxViewController")
-			
 			self.show(langVC, sender: nil)
 		case (1, 1): //spacing
 			print("Spacing")

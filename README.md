@@ -1,28 +1,38 @@
-<p align="center">
-<img src="readme-resources/hero.png" alt="Textor for iOS">
-</p>
-
-<h1 align="center">Textor</h1>
-
-<p align="center">
-<a href="https://itunes.apple.com/app/textor/id1330406995?mt=8&at=1010lII4"><img src="readme-resources/app_store_badge.svg" alt="Download on the App Store"/></a>
-</p>
-
-<p align="center">
-<a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-4.1-orange.svg?style=flat" alt="Swift"/></a>
-
-<img src="https://img.shields.io/badge/Platform-iOS%2011.0+-lightgrey.svg" alt="Platform: iOS">
-<a href="https://travis-ci.org/louisdh/textor"><img src="https://travis-ci.org/louisdh/textor.svg?branch=master" alt="Build Status"/></a>
-<br>
-<a href="http://twitter.com/LouisDhauwe"><img src="https://img.shields.io/badge/Twitter-@LouisDhauwe-blue.svg?style=flat" alt="Twitter"/></a>
-<a href="https://paypal.me/louisdhauwe"><img src="https://img.shields.io/badge/Donate-PayPal-green.svg?style=flat" alt="Donate via PayPal"/></a>
-</p>
-
 ## About
-Textor is a plain text editor for iOS. 
+Textor **++** is a plain text editor for iOS. It is an updated version of [this] (https://github.com/louisdh/textor) open-source project. 
+Since it is no longer being updated, I took it upon myself to add new features including:
+* Syntax Highlighting for code
+* Create any file extenstion
+* Tabbing (auto tabbing & button)
+* Plenty of other coder friendly-features
 
-## Running
-Open `Textor.xcworkspace`, change the bundle identifier to an identifier linked to your Apple developer account in order to run. Build using the `Textor` scheme. 
+This version also has general bug fixes & updated syntax (Swift 5)
+
+## Coming Soon
+Plenty of helpful text-editing tools such as:
+ * Find
+ * Find & Replace
+ * Line Numbers
+ * Tabs 2 Spaces
+ * Spaces 2 Tabs
+ * And plenty more 
+
+For iPad users: 
+ * Key bindings
+ * Optimized views for iPad
+
+## Contribute
+Feel free to add any issues for bug and feature requests. Feel free to contribute to this project by 
+forking the project & then creating a pull request. 
+
+## Thanks
+A special thanks to the original creator of the base project, louisdh. Thanks to the
+[highlight.js] (https://highlightjs.org/) team for the syntax highlighing as well as to 
+raspu for porting it over to [Swift] (https://github.com/Meniny/HighlightJS.swift). 
+Thanks to raphaelhanneken for the helpful [TextView with line numbers]
+(https://github.com/raphaelhanneken/line-number-text-view)
+(I'll be adding this to the project soon). And of course anyone who 
+helped shape the original Textor & all future contributers to Textor++!
 
 ## License
 

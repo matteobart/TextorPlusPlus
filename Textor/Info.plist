@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Textor</string>
+	<string>Textor++</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -34,9 +34,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>CFBundleVersion</key>
-	<string>8</string>
+	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>

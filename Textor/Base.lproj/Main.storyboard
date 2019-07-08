@@ -382,7 +382,7 @@
             </objects>
             <point key="canvasLocation" x="1680.8" y="697.60119940029995"/>
         </scene>
-        <!--About Textor-->
+        <!--About Textor++-->
         <scene sceneID="anp-Dl-UAA">
             <objects>
                 <tableViewController storyboardIdentifier="SettingsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3tO-c6-rtm" customClass="SettingsViewController" customModule="Textor" customModuleProvider="target" sceneMemberID="viewController">
@@ -400,7 +400,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Review Textor on the App Store" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="b2j-5h-dIM">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Review Textor++ on the App Store" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="b2j-5h-dIM">
                                                     <rect key="frame" x="16" y="0.0" width="324" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -418,25 +418,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Textor on GitHub" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ija-WB-lu9">
-                                                    <rect key="frame" x="16" y="0.0" width="324" height="43.5"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="FXe-Fe-sYE" style="IBUITableViewCellStyleDefault" id="dJN-zs-Flg">
-                                        <rect key="frame" x="0.0" y="123" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dJN-zs-Flg" id="LtG-9w-iOS">
-                                            <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Follow @LouisDhauwe on Twitter for updates" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FXe-Fe-sYE">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Textor++ on GitHub" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ija-WB-lu9">
                                                     <rect key="frame" x="16" y="0.0" width="324" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -448,7 +430,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="VG1-7y-DJt" style="IBUITableViewCellStyleDefault" id="LpO-7a-vm1">
-                                        <rect key="frame" x="0.0" y="167" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="123" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="LpO-7a-vm1" id="NXT-OE-R5Y">
                                             <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
@@ -466,7 +448,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="49" id="3kO-dd-lJ4">
-                                        <rect key="frame" x="0.0" y="211" width="375" height="49"/>
+                                        <rect key="frame" x="0.0" y="167" width="375" height="49"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3kO-dd-lJ4" id="Iig-PR-xBg">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="48.5"/>
@@ -508,7 +490,7 @@
                                         <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="Bhw-fh-F8l" detailTextLabel="5OP-xW-YcB" style="IBUITableViewCellStyleValue1" id="E3J-Pn-SBZ">
-                                        <rect key="frame" x="0.0" y="260" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="216" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="E3J-Pn-SBZ" id="65l-8n-3fW">
                                             <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
@@ -533,7 +515,7 @@
                                         <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="4iT-Mx-VdZ">
-                                        <rect key="frame" x="0.0" y="304" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="260" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4iT-Mx-VdZ" id="VBm-cA-b8a">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -569,7 +551,7 @@
                                         <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="eRL-cx-QTU">
-                                        <rect key="frame" x="0.0" y="348" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="304" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eRL-cx-QTU" id="dGc-tn-NO3">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -612,7 +594,7 @@
                             <outlet property="delegate" destination="3tO-c6-rtm" id="fCb-kc-stB"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="About Textor" id="YpV-CU-A1U">
+                    <navigationItem key="navigationItem" title="About Textor++" id="YpV-CU-A1U">
                         <barButtonItem key="leftBarButtonItem" systemItem="done" id="7hw-sh-Kia">
                             <connections>
                                 <action selector="close:" destination="3tO-c6-rtm" id="eZ7-iN-9Bg"/>
@@ -624,6 +606,7 @@
                     <connections>
                         <outlet property="codingModeSwitch" destination="c4Z-Uk-bI7" id="75v-9u-6nd"/>
                         <outlet property="darkThemeSwitch" destination="6jF-bG-JjJ" id="pGz-O9-wvW"/>
+                        <outlet property="fontNameLabel" destination="5OP-xW-YcB" id="eiz-bc-7w2"/>
                         <outlet property="fontSizeLabel" destination="ciR-qS-fNX" id="47c-Ic-rl5"/>
                         <outlet property="fontSizeStepper" destination="0sU-4x-Pih" id="fji-b2-Aic"/>
                     </connections>
