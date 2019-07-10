@@ -1,5 +1,5 @@
 ## About
-Textor **++** is a plain text editor for iOS. It is an updated version of [this] (https://github.com/louisdh/textor) open-source project. 
+Textor**++** is a plain text editor for iOS. It is an updated version of [this] (https://github.com/louisdh/textor) open-source project. 
 Since it is no longer being updated, I took it upon myself to add new features including:
 * Syntax Highlighting for code
 * Create any file extenstion
@@ -15,11 +15,20 @@ Plenty of helpful text-editing tools such as:
  * Line Numbers
  * Tabs 2 Spaces
  * Spaces 2 Tabs
+ * Undo/Redo
+ * Ability to change the theme of Syntax Highlighting
  * And plenty more 
 
 For iPad users: 
  * Key bindings
  * Optimized views for iPad
+ 
+ ## Future Future Features
+ * Tabs! (multiple files open at once)
+ * Get (& Save) documents from OneDrive, Drive, DropBox, etc
+ * Be able to open files from external apps (Slack, Notes, etc), edit in Textor++, save to iCloud (or other provider)
+ * Support for different worldly languages
+ * Use telekinesis to translate thoughts to text
 
 ## Contribute
 Feel free to add any issues for bug and feature requests. Feel free to contribute to this project by 

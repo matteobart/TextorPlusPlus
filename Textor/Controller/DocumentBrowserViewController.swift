@@ -129,6 +129,8 @@ extension DocumentBrowserViewController: UIDocumentBrowserViewControllerDelegate
 			var userChoosenFilename = textField?.text ?? "Untitled.txt"
 			if userChoosenFilename == "" {
 				userChoosenFilename = "Untitled.txt"
+			} else if (!userChoosenFilename.hasExtension()) {
+				userChoosenFilename += ".txt" //if no extension default to .txt
 			}
 			self.finish(controller, filename: userChoosenFilename, didRequestDocumentCreationWithHandler: importHandler)
 
@@ -139,6 +141,8 @@ extension DocumentBrowserViewController: UIDocumentBrowserViewControllerDelegate
 	}
 	//simply an extension of the previous function
 	func finish(_ controller: UIDocumentBrowserViewController, filename: String ,didRequestDocumentCreationWithHandler importHandler: @escaping (URL?, UIDocumentBrowserViewController.ImportMode) -> Void) {
+		
+		
 		
 		let newName = DocumentManager.shared.availableFileName(forProposedName: filename)
 		

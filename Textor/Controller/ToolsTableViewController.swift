@@ -18,14 +18,33 @@ import UIKit
 class ToolsTableViewController: UITableViewController {
 	//@IBOutlet weak var navBar: UINavigationBar!
 	
+	@IBOutlet weak var spacesSlider: UISlider!
 	@IBOutlet weak var currentLanguage: UILabel!
+	@IBOutlet weak var spacesLabel: UILabel!
 	var numberOfSections: Int = 1
+	var completeFilename: String? //set in the segue inside of DocumentViewController
 	
 	@IBAction func doneButtonPressed(_ sender: UIBarButtonItem) {
 		self.dismiss(animated: true) {
 			//nothing to do
 		}
 	}
+	
+	@IBAction func spacesSliderChanged(_ sender: UISlider) {
+		sender.value = sender.value.rounded()
+		print(sender.value)
+		if completeFilename != nil {
+			setSpacePreference(completeFilename: completeFilename!, pref: Int(sender.value))
+		}
+		let val = spacesSlider.value
+		if val > 0 {
+			spacesLabel.text = "Tab Size: \(Int(val.rounded())) Spaces"
+		} else {
+			spacesLabel.text = "Tab Spacing"
+		}
+	}
+	
+	
 	override func viewDidLoad() {
         super.viewDidLoad()
 		if UserDefaultsController.shared.isCodingMode {
@@ -33,17 +52,33 @@ class ToolsTableViewController: UITableViewController {
 		}
 		updateTheme()
 		
-		currentLanguage.text = "Current Language: " + (UserDefaultsController.shared.currentSyntaxLanguage ?? "")
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		updateTheme()
+		
+		
+		//set current label text
+		var labelText = "Current Language: "
+		if completeFilename != nil {
+			labelText += getSyntaxPreferences(completeFilename: completeFilename!) ?? ""
+		}
+		currentLanguage.text = labelText
+		
+		//set the spaces information
+		if completeFilename != nil {
+			spacesSlider.value = Float(getSpacePreferences(completeFilename: completeFilename!))
+			
+		}
+		let val = spacesSlider.value
+		if val > 0 {
+			spacesLabel.text = "Tab Size: \(Int(val.rounded())) Spaces"
+		} else {
+			spacesLabel.text = "Tab Spacing"
+		}
+		
+		
 	}
 	
     // MARK: - Table view data source
@@ -53,7 +88,6 @@ class ToolsTableViewController: UITableViewController {
         return numberOfSections
     }
 	
-
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		switch (indexPath.section, indexPath.item) {
@@ -62,7 +96,8 @@ class ToolsTableViewController: UITableViewController {
 		case (0, 1): //Find & Replace
 			print("FindN")
 		case (1, 0): //Current Language
-			let langVC = self.storyboard!.instantiateViewController(withIdentifier: "SyntaxViewController")
+			let langVC = self.storyboard!.instantiateViewController(withIdentifier: "SyntaxViewController") as! SytanxTableViewController
+			langVC.completeFilename = completeFilename
 			self.show(langVC, sender: nil)
 		case (1, 1): //spacing
 			print("Spacing")
@@ -154,6 +189,9 @@ class ToolsTableViewController: UITableViewController {
 	}
 	//END
 	
+	
+	
+
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

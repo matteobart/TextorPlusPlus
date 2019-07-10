@@ -31,12 +31,10 @@ class DocumentViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		let filename = self.navigationController?.title ?? ""
+		//print(document?.fileURL.absoluteString)
 		//SET UP HIGHLIGHTR
 		if UserDefaultsController.shared.isCodingMode {
-			let syntaxLanguage = fileNameToLanguage(filename)
-			textStorage.language = syntaxLanguage
-			UserDefaultsController.shared.currentSyntaxLanguage = syntaxLanguage
+			//syntax language set up in viewWillAppear
 			let layoutManager = NSLayoutManager()
 			textStorage.addLayoutManager(layoutManager)
 			
@@ -46,8 +44,7 @@ class DocumentViewController: UIViewController {
 			textView = UITextView(frame: self.placeholderView.bounds, textContainer: textContainer)
 			
 		} else {
-			UserDefaultsController.shared.currentSyntaxLanguage = nil
-
+			
 			textView = UITextView(frame: self.placeholderView.bounds)
 		}
 		self.placeholderView.addSubview(textView)
@@ -156,8 +153,27 @@ class DocumentViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 		updateTheme()
-		textStorage.language = UserDefaultsController.shared.currentSyntaxLanguage
 		if UserDefaultsController.shared.isCodingMode {
+			//set up highlighting
+			let filename = self.navigationController?.title ?? ""
+			var syntaxLanguage: String?
+			if document != nil  {
+				if let lang = getSyntaxPreferences(completeFilename: document!.fileURL.absoluteString){
+					if lang == "No Highlighting" {//special case
+						syntaxLanguage = nil
+					} else {
+						syntaxLanguage = lang
+					}
+				} else {
+					syntaxLanguage = fileNameToLanguage(filename)
+					setSyntaxPreference(completeFilename: document!.fileURL.absoluteString, pref: syntaxLanguage ?? "No Highlighting") //if no syntax language then default to nil ("No Highlighting")
+				}
+			} else {
+				syntaxLanguage = fileNameToLanguage(filename)
+			}
+			textStorage.language = syntaxLanguage
+			
+			//set up keyboard
 			textView.autocapitalizationType = .none
 			textView.autocorrectionType = .no
 		} else {
@@ -215,15 +231,15 @@ class DocumentViewController: UIViewController {
 			let ext = filename.getExtension()
 			switch ext.lowercased(){
 			case "py", "pyc":
-				return "Python"
+				return "python"
 			case "java":
-				return "Java"
+				return "java"
 			case "cpp":
-				return "C++"
+				return "cpp"
 			case "c":
-				return "C"
+				return "c"
 			case "swift":
-				return "Swift"
+				return "swift"
 			default:
 				return nil
 				
@@ -232,13 +248,13 @@ class DocumentViewController: UIViewController {
 			return nil
 		}
 	}
-	
+
 	@IBAction func moreButtonPressed(_ sender: UIBarButtonItem) {
 //		let storyboard = UIStoryboard(name: "Main_iPhone", bundle: nil)
 //		let vc = storyboard.instantiateViewControllerWithIdentifier("POIListViewController") as! UIViewController
 //
-		let toolsVC = self.storyboard!.instantiateViewController(withIdentifier: "ToolsViewController")
-		
+		let toolsVC = self.storyboard!.instantiateViewController(withIdentifier: "ToolsViewController") as! ToolsTableViewController
+		toolsVC.completeFilename = document?.fileURL.absoluteString
 		let navCon = UINavigationController(rootViewController: toolsVC)
 		navCon.modalPresentationStyle = .formSheet
 		

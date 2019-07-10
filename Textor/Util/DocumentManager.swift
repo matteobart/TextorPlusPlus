@@ -99,7 +99,7 @@ class DocumentManager {
 
 		let docURL = fileName.hasExtension() ?
 		cachesURL.appendingPathComponent(fileName.getFileName()).appendingPathExtension(fileName.getExtension()):
-		cachesURL.appendingPathComponent(fileName).appendingPathExtension(defaultFileExtension)
+		cachesURL.appendingPathComponent(fileName).appendingPathExtension(defaultFileExtension) //while files made in Textor++ will have a file extension, can not be sure of iCloud Drive
 		
 
 		return docURL
@@ -120,9 +120,10 @@ class DocumentManager {
 
 extension DocumentManager {
 
-	/// - Parameter proposedName: With extension
+	/// - Parameter proposedName: Must have an extension
+	
 	func availableFileName(forProposedName proposedName: String) -> String {
-
+		
 		let files = fileList()//.map { $0.getFileName().lowercased() }
 
 		var availableFileName = proposedName

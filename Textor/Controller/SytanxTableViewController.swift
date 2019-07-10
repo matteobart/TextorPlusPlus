@@ -11,6 +11,8 @@ import Highlightr
 
 class SytanxTableViewController: UITableViewController {
 	
+	var completeFilename: String?
+	
 	let searchController: UISearchController = {
 		let searchController = UISearchController(searchResultsController: nil)
 		searchController.obscuresBackgroundDuringPresentation = false
@@ -18,15 +20,17 @@ class SytanxTableViewController: UITableViewController {
 		return searchController
 	}()
 	
-	let languages: [String] = {
+	lazy var languages: [String] = {
 		var ret = Highlightr.init()!.supportedLanguages()
-		ret.append("C") //for some reason C is missing
+		ret.append("c") //for some reason C is missing
 		ret = ret.sorted()
 		
 		ret.insert("No Highlighting", at: 0) //if this changes! UPDATE IT AS WELL BELOW
-		if let add = UserDefaultsController.shared.currentSyntaxLanguage {
-			ret = ret.filter {$0 != add}
-			ret.insert(add, at: 0)
+		if completeFilename != nil {
+			if let add = getSyntaxPreferences(completeFilename: completeFilename!){
+				ret = ret.filter {$0 != add}
+				ret.insert(add, at: 0)
+			}
 		}
 		return ret
 	}()
@@ -103,7 +107,10 @@ class SytanxTableViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 		
-		let currentSyntax = UserDefaultsController.shared.currentSyntaxLanguage
+		var currentSyntax = ""
+		if completeFilename != nil {
+			currentSyntax = getSyntaxPreferences(completeFilename: completeFilename!) ?? ""
+		}
 		if cell.textLabel?.text == currentSyntax {
 			cell.accessoryType = .checkmark
 		} else {
@@ -142,11 +149,8 @@ class SytanxTableViewController: UITableViewController {
 		
 		let cell = tableView.cellForRow(at: indexPath)
 		if let syntaxLanguage = cell?.textLabel?.text {
-			if (syntaxLanguage == "No Highlighting") {
-				UserDefaultsController.shared.currentSyntaxLanguage = nil
-			} else {
-				UserDefaultsController.shared.currentSyntaxLanguage = syntaxLanguage
-
+			if completeFilename != nil {
+				setSyntaxPreference(completeFilename: completeFilename!, pref: syntaxLanguage)
 			}
 			
 		}
