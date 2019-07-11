@@ -23,6 +23,7 @@ class ToolsTableViewController: UITableViewController {
 	@IBOutlet weak var spacesLabel: UILabel!
 	var numberOfSections: Int = 1
 	var completeFilename: String? //set in the segue inside of DocumentViewController
+	var documentVC: DocumentViewController?
 	
 	@IBAction func doneButtonPressed(_ sender: UIBarButtonItem) {
 		self.dismiss(animated: true) {
@@ -100,13 +101,14 @@ class ToolsTableViewController: UITableViewController {
 			langVC.completeFilename = completeFilename
 			self.show(langVC, sender: nil)
 		case (1, 1): //spacing
-			print("Spacing")
+			print("Spacing cell tapped")
+			//do nothing
 		case (1, 2): //convert tabs to spaces
-			print("Convert")
+			documentVC?.switchToSpaces(numOfSpaces: 4)
 		case (1, 3): //convert spaces to tabs
-			print("Conver")
+			documentVC?.switchToTabs()
 		case (1, 4): //conver curly to quotes
-			print("Convert")
+			documentVC?.removeCurlyQuotes()
 		default:
 			print("No selection")
 		}

@@ -55,6 +55,9 @@ class DocumentViewController: UIViewController {
 		
 		let bar = UIToolbar()
 		let tab = UIBarButtonItem(title:"Tab", style: .plain, target: self, action: #selector(tabButtonPressed))
+		let undo = UIBarButtonItem(title: "Undo", style: .plain, target: self, action: #selector(undoButtonPressed))
+		let redo = UIBarButtonItem(title: "Redo", style: .plain, target: self, action: #selector(redoButtonPressed))
+		let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 		tab.tintColor = .appTintColor
 
 		if UserDefaultsController.shared.isDarkMode {
@@ -62,10 +65,12 @@ class DocumentViewController: UIViewController {
 		} else {
 			bar.barTintColor = .white
 		}
+		redo.isEnabled = textView.undoManager?.canRedo ?? false
+		undo.isEnabled = textView.undoManager?.canUndo ?? false
 		bar.isTranslucent = true
-		bar.items = [tab]
+		bar.items = [tab, space, undo, redo]
 		bar.sizeToFit()
-
+		
 		textView.inputAccessoryView = bar
 		
 		self.navigationController?.view.tintColor = .appTintColor
@@ -235,6 +240,16 @@ class DocumentViewController: UIViewController {
 		addText(to: textView, add: add, inPosition: spot)
 	}
 	
+	@objc func undoButtonPressed(button: UIBarButtonItem) {
+		textView.undoManager?.undo()
+		button.isEnabled = textView.undoManager?.canUndo ?? false
+	}
+	
+	@objc func redoButtonPressed(button: UIBarButtonItem) {
+		textView.undoManager?.redo()
+		button.isEnabled = textView.undoManager?.canRedo ?? false
+	}
+	
 	//ADD MORE TO LIST
 	func fileNameToLanguage(_ filename: String) -> String? {
 		if filename.hasExtension() {
@@ -260,11 +275,9 @@ class DocumentViewController: UIViewController {
 	}
 
 	@IBAction func moreButtonPressed(_ sender: UIBarButtonItem) {
-//		let storyboard = UIStoryboard(name: "Main_iPhone", bundle: nil)
-//		let vc = storyboard.instantiateViewControllerWithIdentifier("POIListViewController") as! UIViewController
-//
 		let toolsVC = self.storyboard!.instantiateViewController(withIdentifier: "ToolsViewController") as! ToolsTableViewController
 		toolsVC.completeFilename = document?.fileURL.absoluteString
+		toolsVC.documentVC = self
 		let navCon = UINavigationController(rootViewController: toolsVC)
 		navCon.modalPresentationStyle = .formSheet
 		
@@ -291,7 +304,32 @@ class DocumentViewController: UIViewController {
 
 }
 
-
+//functions for the tools to use
+//Find, Replace, Etc
+extension DocumentViewController {
+	//currently only converts 4 spaces -> 1 tab
+	func switchToTabs(){
+		var text = textView.text
+		text = text?.replacingOccurrences(of: String.init(repeating: " ", count: 4), with: "\t")
+		textView.text = text
+	}
+	
+	func switchToSpaces(numOfSpaces: Int){
+		var text = textView.text
+		text = text?.replacingOccurrences(of: "\t", with: String.init(repeating: " ", count: numOfSpaces))
+		textView.text = text
+	}
+	
+	func removeCurlyQuotes(){
+		var text = textView.text
+		text = text?.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
+		textView.text = text
+	}
+	
+	func find(_ searchFor: String){
+		
+	}
+}
 
 extension DocumentViewController: UITextViewDelegate {
 	
@@ -327,8 +365,22 @@ extension DocumentViewController: UITextViewDelegate {
 		textView.text = text.prefix(inPosition) + add + text.suffix(textLength - inPosition)
 	}
 	
+	//this gets called when anything gets called is added to textview
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
 		
+		//first update the undo/redo button
+		if let bar = textView.inputAccessoryView as? UIToolbar {
+			for item in bar.items ?? [] {
+				if item.title == "Undo" {
+					item.isEnabled = textView.undoManager?.canUndo ?? false
+				} else if item.title == "Redo" {
+					item.isEnabled = textView.undoManager?.canRedo ?? false
+				}
+			}
+		}
+
+		//check what they are typing, to see if you must
+		//change it
 		if UserDefaultsController.shared.isCodingMode {
 			
 			if (text == "") { //so deleting works properly
