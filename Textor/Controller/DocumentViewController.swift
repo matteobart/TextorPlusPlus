@@ -21,6 +21,7 @@ class DocumentViewController: UIViewController {
 	
 	var textView: UITextView!
 	var document: Document?
+	var tabSize = 0 //0 = tab, else number of spaces
 
 	
 
@@ -158,6 +159,7 @@ class DocumentViewController: UIViewController {
 			let filename = self.navigationController?.title ?? ""
 			var syntaxLanguage: String?
 			if document != nil  {
+				//syntax highlighting
 				if let lang = getSyntaxPreferences(completeFilename: document!.fileURL.absoluteString){
 					if lang == "No Highlighting" {//special case
 						syntaxLanguage = nil
@@ -168,6 +170,8 @@ class DocumentViewController: UIViewController {
 					syntaxLanguage = fileNameToLanguage(filename)
 					setSyntaxPreference(completeFilename: document!.fileURL.absoluteString, pref: syntaxLanguage ?? "No Highlighting") //if no syntax language then default to nil ("No Highlighting")
 				}
+				//spacing preferences
+				tabSize = getSpacePreferences(completeFilename: document!.fileURL.absoluteString)
 			} else {
 				syntaxLanguage = fileNameToLanguage(filename)
 			}
@@ -222,7 +226,13 @@ class DocumentViewController: UIViewController {
 
 	@objc func tabButtonPressed () {
 		let spot = textView.selectedRange.upperBound
-		addText(to: textView, add: "\t", inPosition: spot)
+		var add = ""
+		if tabSize == 0 {
+			add = "\t"
+		} else {
+			add = String.init(repeating: " ", count: tabSize)
+		}
+		addText(to: textView, add: add, inPosition: spot)
 	}
 	
 	//ADD MORE TO LIST
@@ -281,24 +291,34 @@ class DocumentViewController: UIViewController {
 
 }
 
+
+
 extension DocumentViewController: UITextViewDelegate {
 	
-	//ADD
-	//SHOULD BE MORE ROBUST, ALSO TAKE INTO ACCOUNT SPACES
-	//SHOULD ONLY LOOK AT THE PREFIX SPACES/TABS
-	func getNumberOfTabs(_ textView: UITextView, range: NSRange) -> Int {
+	//PLEASE FIX, SWIFT WAS GIVING ME SO MUCH CRAP
+	//GIVEN A textView and a range, grab the lowerbound of the range
+	//Get the preceding space/tabs in the line
+	func getBeginningSpacing(_ textView: UITextView, range: NSRange) -> String {
 		
 		let text = textView.text!
-		var numOfTabs = 0
 		let findBefore = range.lowerBound
+		var searchText = ""
 		for char in text.prefix(findBefore).reversed() {
-			if char == "\t" {
-				numOfTabs+=1
-			} else if char == "\n" {
-				return numOfTabs
+			if char != "\n" {
+				searchText = String(char) + searchText
+			} else {
+				break
 			}
 		}
-		return numOfTabs
+		var ret = ""
+		for char in searchText {
+			if char == " " || char == "\t" {
+				ret = ret + String(char)
+			} else {
+				break
+			}
+		}
+		return ret
 	}
 	
 	func addText(to textView: UITextView, add: String, inPosition: Int) {
@@ -314,12 +334,16 @@ extension DocumentViewController: UITextViewDelegate {
 			if (text == "") { //so deleting works properly
 				return true
 			} else if (text == "\n") { //keep tabbing the same
-				let numTabs = getNumberOfTabs(textView, range: range)
-				addText(to: textView, add: "\n" + String(repeating: "\t", count: numTabs), inPosition: range.upperBound)
+				let spaces = getBeginningSpacing(textView, range: range)
+				addText(to: textView, add: "\n" + spaces, inPosition: range.upperBound)
 				//put cursor where it should be
-				let cursorPosition = range.upperBound + 1 + numTabs
+				let cursorPosition = range.upperBound + 1 + spaces.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
+				return false
+			} else if (text == "\t") {
+				//just ignore a regular tab
+				tabButtonPressed()
 				return false
 			} else { //just make sure that there is no curly quotes
 				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
