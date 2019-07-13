@@ -61,7 +61,7 @@ class ToolsTableViewController: UITableViewController {
 		
 		
 		//set current label text
-		var labelText = "Current Language: "
+		var labelText = "Syntax: "
 		if completeFilename != nil {
 			labelText += getSyntaxPreferences(completeFilename: completeFilename!) ?? ""
 		}
@@ -90,6 +90,7 @@ class ToolsTableViewController: UITableViewController {
     }
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		
 		tableView.deselectRow(at: indexPath, animated: true)
 		switch (indexPath.section, indexPath.item) {
 		case (0, 0): //Find
@@ -105,10 +106,13 @@ class ToolsTableViewController: UITableViewController {
 			//do nothing
 		case (1, 2): //convert tabs to spaces
 			documentVC?.switchToSpaces(numOfSpaces: 4)
+			self.dismiss(animated: true, completion: nil)
 		case (1, 3): //convert spaces to tabs
 			documentVC?.switchToTabs()
+			self.dismiss(animated: true, completion: nil)
 		case (1, 4): //conver curly to quotes
 			documentVC?.removeCurlyQuotes()
+			self.dismiss(animated: true, completion: nil)
 		default:
 			print("No selection")
 		}
