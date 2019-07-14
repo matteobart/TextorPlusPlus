@@ -35,7 +35,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CdG-GK-gx0">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="64" width="355" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
@@ -44,7 +44,7 @@
                             <constraint firstItem="CdG-GK-gx0" firstAttribute="leading" secondItem="BoZ-jc-2Y8" secondAttribute="leading" id="S92-n5-wrh"/>
                             <constraint firstItem="CdG-GK-gx0" firstAttribute="bottom" secondItem="BoZ-jc-2Y8" secondAttribute="bottom" id="W21-J3-a5B"/>
                             <constraint firstItem="CdG-GK-gx0" firstAttribute="top" secondItem="BoZ-jc-2Y8" secondAttribute="top" id="a84-bZ-KJ1"/>
-                            <constraint firstItem="CdG-GK-gx0" firstAttribute="trailing" secondItem="BoZ-jc-2Y8" secondAttribute="trailing" id="uAQ-8L-Bce"/>
+                            <constraint firstItem="CdG-GK-gx0" firstAttribute="trailing" secondItem="BoZ-jc-2Y8" secondAttribute="trailing" constant="-20" id="uAQ-8L-Bce"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="BoZ-jc-2Y8"/>
                     </view>

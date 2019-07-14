@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8A3FD70D1F2610010DF9625A /* Pods_Textor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E53ED7F36F7596674975E47 /* Pods_Textor.framework */; };
+		A665307E22DA509F003A84BC /* LineNumberTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A665307D22DA509F003A84BC /* LineNumberTextView.swift */; };
 		A68D620322CE468500A2FA2F /* ToolsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68D620222CE468500A2FA2F /* ToolsTableViewController.swift */; };
 		A6E6E71722D1A78200C42ABE /* SytanxTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E6E71622D1A78200C42ABE /* SytanxTableViewController.swift */; };
 		BE000C261FF9451F00D06B91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE000C251FF9451F00D06B91 /* AppDelegate.swift */; };
@@ -52,6 +53,7 @@
 /* Begin PBXFileReference section */
 		0E53ED7F36F7596674975E47 /* Pods_Textor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Textor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		42FA62BBBE3A16CF4D515238 /* Pods-Textor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Textor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Textor/Pods-Textor.debug.xcconfig"; sourceTree = "<group>"; };
+		A665307D22DA509F003A84BC /* LineNumberTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LineNumberTextView.swift; path = Textor/Helper/LineNumberTextView.swift; sourceTree = SOURCE_ROOT; };
 		A68D620222CE468500A2FA2F /* ToolsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsTableViewController.swift; sourceTree = "<group>"; };
 		A6E6E71622D1A78200C42ABE /* SytanxTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SytanxTableViewController.swift; sourceTree = "<group>"; };
 		BE000C221FF9451F00D06B91 /* Textor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Textor.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -179,6 +181,7 @@
 				A6E6E71622D1A78200C42ABE /* SytanxTableViewController.swift */,
 				BE000C271FF9451F00D06B91 /* DocumentBrowserViewController.swift */,
 				BE000C291FF9451F00D06B91 /* DocumentViewController.swift */,
+				A665307D22DA509F003A84BC /* LineNumberTextView.swift */,
 				BEFE544F20697B1000FEFE93 /* FontPickerViewController.swift */,
 				BED3CAB320543936007968FF /* SettingsViewController.swift */,
 			);
@@ -394,6 +397,7 @@
 				BE000C261FF9451F00D06B91 /* AppDelegate.swift in Sources */,
 				BE5CE1132059AA2500158BE9 /* StoryboardFactory.swift in Sources */,
 				BED6707D201BB1B200D04AD5 /* KeyboardObserver.swift in Sources */,
+				A665307E22DA509F003A84BC /* LineNumberTextView.swift in Sources */,
 				BECE40FA2038DB67004889F0 /* UIViewController+Alerts.swift in Sources */,
 				BEDDAB152058745300AC9396 /* Notification+Name.swift in Sources */,
 				BEDDAB192058811F00AC9396 /* Bundle+Info.swift in Sources */,

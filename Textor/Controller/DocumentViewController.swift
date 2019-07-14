@@ -22,8 +22,15 @@ class DocumentViewController: UIViewController {
 	var textView: UITextView!
 	var document: Document?
 	var tabSize = 0 //0 = tab, else number of spaces
+	var standardBar: UIToolbar?
+	var syntaxLanguage: String?
 
-	
+	//FIND
+	//current one the user has selected
+	var currentFind = 0
+	//to get the number of find matches take the length
+	//of findRanges
+	var findRanges: [NSRange] = []
 
 	
 	private let keyboardObserver = KeyboardObserver()
@@ -71,7 +78,9 @@ class DocumentViewController: UIViewController {
 		bar.items = [tab, space, undo, redo]
 		bar.sizeToFit()
 		
-		textView.inputAccessoryView = bar
+		standardBar = bar //set the class variable
+		
+		textView.inputAccessoryView = standardBar
 		
 		self.navigationController?.view.tintColor = .appTintColor
 		self.view.tintColor = .appTintColor
@@ -162,7 +171,6 @@ class DocumentViewController: UIViewController {
 		if UserDefaultsController.shared.isCodingMode {
 			//set up highlighting
 			let filename = self.navigationController?.title ?? ""
-			var syntaxLanguage: String?
 			if document != nil  {
 				//syntax highlighting
 				if let lang = getSyntaxPreferences(completeFilename: document!.fileURL.absoluteString){
@@ -180,7 +188,7 @@ class DocumentViewController: UIViewController {
 			} else {
 				syntaxLanguage = fileNameToLanguage(filename)
 			}
-			textStorage.language = syntaxLanguage
+			textStorage.language = syntaxLanguage //this is all going to change
 			
 			//set up keyboard
 			textView.autocapitalizationType = .none
@@ -327,10 +335,97 @@ extension DocumentViewController {
 	}
 	
 	func find(_ searchFor: String){
+		let bar = UIToolbar()
+		let up = UIBarButtonItem(title: "/\\", style: .plain, target: self, action: #selector(upButtonPressed))
+		let down = UIBarButtonItem(title: "\\/", style: .plain, target: self, action: #selector(downButtonPressed))
+		let searchField = UISearchBar(frame: CGRect(x: 0, y: 0, width: 150, height: 20))
+		searchField.delegate = self
+		let search = UIBarButtonItem(customView: searchField)
+		let done = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneButtonPressed))
+		let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+		bar.items = [up, down, space, search, done]
+		bar.sizeToFit()
+		textView.inputAccessoryView = bar
+		textView.reloadInputViews()
+		textView.becomeFirstResponder()
+
+	}
+	
+	
+	@objc func upButtonPressed(){
+		currentFind-=1
+		if currentFind == -1 {
+			currentFind = findRanges.count - 1
+		}
+		textView.selectedRange = findRanges[currentFind]
+		textView.scrollRangeToVisible(findRanges[currentFind])
+	}
+	
+	@objc func downButtonPressed(){
+		currentFind+=1
+		if currentFind == findRanges.count {
+			currentFind = 0
+		}
+		textView.selectedRange = findRanges[currentFind]
+		textView.scrollRangeToVisible(findRanges[currentFind])
 		
+	}
+	
+	
+	@objc func doneButtonPressed(){
+		findRanges = []
+		currentFind = 0
+		
+		//remove the find tool bar
+		if let bar = textView.inputAccessoryView as? UIToolbar {
+			for item in bar.items ?? [] {
+				if let search = item.customView as? UISearchBar {
+					search.resignFirstResponder()
+				}
+			}
+		}
+		textView.inputAccessoryView = standardBar
+		textView.reloadInputViews()
 	}
 }
 
+extension DocumentViewController: UISearchBarDelegate {
+	
+	
+	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+		findRanges = []
+		currentFind = 0
+		
+		let searchString = searchBar.text ?? ""
+		let baseString = textView.text ?? ""
+		//let attributed = NSMutableAttributedString(string: baseString)
+		var regex: NSRegularExpression?
+		do {
+			try regex = NSRegularExpression(pattern: searchString, options: .caseInsensitive)
+			
+		} catch {
+			regex = nil
+		}
+		if regex != nil {
+			for match in (regex?.matches(in: baseString, options: [], range: NSRange(location: 0, length: baseString.utf16.count)))! {
+				var attrs: [NSAttributedString.Key : Any] = [:]
+				attrs[NSAttributedString.Key.backgroundColor] = UIColor.yellow
+				attrs[NSAttributedString.Key.foregroundColor] = UIColor.black
+				//attributed.addAttributes(attrs, range: match.range)
+				textStorage.addAttributes(attrs, range: match.range)
+				findRanges.append(match.range)
+			}
+			//textView.attributedText = attributed
+		}
+		
+		
+		searchBar.resignFirstResponder()
+	}
+	
+	
+	
+}
+	
 extension DocumentViewController: UITextViewDelegate {
 	
 	//PLEASE FIX, SWIFT WAS GIVING ME SO MUCH CRAP
@@ -365,6 +460,25 @@ extension DocumentViewController: UITextViewDelegate {
 		textView.text = text.prefix(inPosition) + add + text.suffix(textLength - inPosition)
 	}
 	
+	func textViewDidChange(_ textView: UITextView) {
+		textViewDidChange()
+	}
+	
+	//custom method that is called because typical methods don't handle
+	//programmed text well
+	func textViewDidChange() {
+		
+		//keep the highlighted text highlighted
+		if let bar = textView.inputAccessoryView as? UIToolbar {
+			for item in bar.items ?? [] {
+				if let search = item.customView as? UISearchBar {
+					searchBarSearchButtonClicked(search)
+				}
+			}
+		}
+	}
+	
+	//THIS WILL NEED TO BE RETHOUGHT
 	//this gets called when anything gets called is added to textview
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
 		
@@ -378,6 +492,7 @@ extension DocumentViewController: UITextViewDelegate {
 				}
 			}
 		}
+		
 
 		//check what they are typing, to see if you must
 		//change it
@@ -392,10 +507,12 @@ extension DocumentViewController: UITextViewDelegate {
 				let cursorPosition = range.upperBound + 1 + spaces.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
+				textViewDidChange()
 				return false
 			} else if (text == "\t") {
 				//just ignore a regular tab
 				tabButtonPressed()
+				textViewDidChange()
 				return false
 			} else { //just make sure that there is no curly quotes
 				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
@@ -404,10 +521,12 @@ extension DocumentViewController: UITextViewDelegate {
 				let cursorPosition = range.upperBound + newText.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
+				textViewDidChange()
 				return false
 				
 			}
 		}
+		
 		
 		return true
 	}

@@ -95,6 +95,8 @@ class ToolsTableViewController: UITableViewController {
 		switch (indexPath.section, indexPath.item) {
 		case (0, 0): //Find
 			print("Find")
+			documentVC?.find("hello")
+			self.dismiss(animated: true, completion: nil)
 		case (0, 1): //Find & Replace
 			print("FindN")
 		case (1, 0): //Current Language
