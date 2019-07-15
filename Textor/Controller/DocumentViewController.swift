@@ -49,6 +49,8 @@ class DocumentViewController: UIViewController {
 			let textContainer = NSTextContainer(size: view.bounds.size)
 			layoutManager.addTextContainer(textContainer)
 			
+			textStorage.highlightDelegate = self
+			
 			textView = UITextView(frame: self.placeholderView.bounds, textContainer: textContainer)
 			
 		} else {
@@ -390,42 +392,64 @@ extension DocumentViewController {
 }
 
 extension DocumentViewController: UISearchBarDelegate {
+
+	//a bit wonky but...
+	//when we search, we simply replace the whole view, so that the highlighr is called
+	//real highlighting the find words can be found there
+	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+		let r = NSRange(location: 0, length: textView.text.count)
+		let t = textView.text ?? ""
+		textStorage.replaceCharacters(in: r, with: t)
+		
+	}
 	
-	
+	//we auto search so no real logic needs to go here
 	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-		findRanges = []
-		currentFind = 0
-		
-		let searchString = searchBar.text ?? ""
-		let baseString = textView.text ?? ""
-		//let attributed = NSMutableAttributedString(string: baseString)
-		var regex: NSRegularExpression?
-		do {
-			try regex = NSRegularExpression(pattern: searchString, options: .caseInsensitive)
-			
-		} catch {
-			regex = nil
-		}
-		if regex != nil {
-			for match in (regex?.matches(in: baseString, options: [], range: NSRange(location: 0, length: baseString.utf16.count)))! {
-				var attrs: [NSAttributedString.Key : Any] = [:]
-				attrs[NSAttributedString.Key.backgroundColor] = UIColor.yellow
-				attrs[NSAttributedString.Key.foregroundColor] = UIColor.black
-				//attributed.addAttributes(attrs, range: match.range)
-				textStorage.addAttributes(attrs, range: match.range)
-				findRanges.append(match.range)
-			}
-			//textView.attributedText = attributed
-		}
-		
-		
 		searchBar.resignFirstResponder()
 	}
 	
-	
-	
 }
-	
+
+extension DocumentViewController: HighlightDelegate {
+	//this function essentially gets called whenever text is added
+	//this is the place to add more color on top of the highlighting
+	func didHighlight(_ range: NSRange, success: Bool) {
+		
+		
+		//keep the highlighted text highlighted
+		//look for a search bar, if there is one then...
+ 		if let bar = textView.inputAccessoryView as? UIToolbar {
+			for item in bar.items ?? [] {
+				if let searchBar = item.customView as? UISearchBar {
+					
+					findRanges = []
+					currentFind = 0
+					
+					let searchString = searchBar.text ?? ""
+					let baseString = textView.text ?? ""
+					var regex: NSRegularExpression?
+					do {
+						try regex = NSRegularExpression(pattern: searchString, options: .caseInsensitive)
+						
+					} catch {
+						regex = nil
+					}
+					if regex != nil {
+						for match in (regex?.matches(in: baseString, options: [], range: NSRange(location: 0, length: baseString.utf16.count)))! {
+							var attrs: [NSAttributedString.Key : Any] = [:]
+							attrs[NSAttributedString.Key.backgroundColor] = UIColor.yellow
+							attrs[NSAttributedString.Key.foregroundColor] = UIColor.black
+							textStorage.addAttributes(attrs, range: match.range)
+							
+							findRanges.append(match.range)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 extension DocumentViewController: UITextViewDelegate {
 	
 	//PLEASE FIX, SWIFT WAS GIVING ME SO MUCH CRAP
@@ -460,25 +484,8 @@ extension DocumentViewController: UITextViewDelegate {
 		textView.text = text.prefix(inPosition) + add + text.suffix(textLength - inPosition)
 	}
 	
-	func textViewDidChange(_ textView: UITextView) {
-		textViewDidChange()
-	}
+
 	
-	//custom method that is called because typical methods don't handle
-	//programmed text well
-	func textViewDidChange() {
-		
-		//keep the highlighted text highlighted
-		if let bar = textView.inputAccessoryView as? UIToolbar {
-			for item in bar.items ?? [] {
-				if let search = item.customView as? UISearchBar {
-					searchBarSearchButtonClicked(search)
-				}
-			}
-		}
-	}
-	
-	//THIS WILL NEED TO BE RETHOUGHT
 	//this gets called when anything gets called is added to textview
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
 		
@@ -507,12 +514,15 @@ extension DocumentViewController: UITextViewDelegate {
 				let cursorPosition = range.upperBound + 1 + spaces.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
-				textViewDidChange()
+				//textViewDidChange()
 				return false
 			} else if (text == "\t") {
 				//just ignore a regular tab
 				tabButtonPressed()
-				textViewDidChange()
+				let cursorPosition = range.upperBound + (tabSize==0 ? 1 : tabSize)
+				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
+				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
+				//textViewDidChange()
 				return false
 			} else { //just make sure that there is no curly quotes
 				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
@@ -521,7 +531,7 @@ extension DocumentViewController: UITextViewDelegate {
 				let cursorPosition = range.upperBound + newText.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
-				textViewDidChange()
+				//textViewDidChange()
 				return false
 				
 			}
