@@ -41,10 +41,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="CdG-GK-gx0" firstAttribute="leading" secondItem="BoZ-jc-2Y8" secondAttribute="leading" id="S92-n5-wrh"/>
-                            <constraint firstItem="CdG-GK-gx0" firstAttribute="bottom" secondItem="BoZ-jc-2Y8" secondAttribute="bottom" id="W21-J3-a5B"/>
-                            <constraint firstItem="CdG-GK-gx0" firstAttribute="top" secondItem="BoZ-jc-2Y8" secondAttribute="top" id="a84-bZ-KJ1"/>
-                            <constraint firstItem="CdG-GK-gx0" firstAttribute="trailing" secondItem="BoZ-jc-2Y8" secondAttribute="trailing" constant="-20" id="uAQ-8L-Bce"/>
+                            <constraint firstItem="CdG-GK-gx0" firstAttribute="bottom" secondItem="BoZ-jc-2Y8" secondAttribute="bottom" id="9lp-by-UHQ"/>
+                            <constraint firstItem="BoZ-jc-2Y8" firstAttribute="trailing" secondItem="CdG-GK-gx0" secondAttribute="trailing" constant="20" id="UjJ-RV-Nfx"/>
+                            <constraint firstItem="CdG-GK-gx0" firstAttribute="top" secondItem="BoZ-jc-2Y8" secondAttribute="top" id="mUW-e5-bjF"/>
+                            <constraint firstItem="CdG-GK-gx0" firstAttribute="leading" secondItem="SIE-Uh-Zny" secondAttribute="leading" id="uNn-UR-qKU"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="BoZ-jc-2Y8"/>
                     </view>

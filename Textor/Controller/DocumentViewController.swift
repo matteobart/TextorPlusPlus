@@ -50,14 +50,22 @@ class DocumentViewController: UIViewController {
 			layoutManager.addTextContainer(textContainer)
 			
 			textStorage.highlightDelegate = self
-			
+			print(self.placeholderView.bounds)
 			textView = UITextView(frame: self.placeholderView.bounds, textContainer: textContainer)
 			
 		} else {
 			
 			textView = UITextView(frame: self.placeholderView.bounds)
 		}
-		self.placeholderView.addSubview(textView)
+		//self.placeholderView.addSubview(textView)
+//		let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height-400)
+//		self.textView.frame(forAlignmentRect: frame)
+		let h = self.textView.frame.height - CGFloat(25)
+		let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: h)
+		self.textView.frame = frame
+		
+		
+		self.view.addSubview(textView)
 
 		textView.delegate = self
 		//END
@@ -86,6 +94,10 @@ class DocumentViewController: UIViewController {
 		
 		self.navigationController?.view.tintColor = .appTintColor
 		self.view.tintColor = .appTintColor
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+		
 		
 		updateTheme()
 
@@ -169,6 +181,7 @@ class DocumentViewController: UIViewController {
 	
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+		
 		updateTheme()
 		if UserDefaultsController.shared.isCodingMode {
 			//set up highlighting
@@ -311,6 +324,28 @@ class DocumentViewController: UIViewController {
             self.document?.close(completionHandler: nil)
         }
     }
+	
+	
+	@objc func keyboardWillShow(notification: NSNotification) {
+		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+			let h = self.textView.frame.height - keyboardSize.height
+			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: h)
+			self.textView.frame = frame
+			//self.textView.frame.origin.y -= keyboardSize.height
+			//self.view.frame.origin.y -= keyboardSize.height
+		}
+	}
+	
+	@objc func keyboardWillHide(notification: NSNotification) {
+		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+			let h = self.textView.frame.height + keyboardSize.height
+			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: h)
+			self.textView.frame = frame
+			//self.textView.frame.origin.y -= keyboardSize.height
+			//self.view.frame.origin.y -= keyboardSize.height
+		}
+		//self.view.frame.origin.y = 0
+	}
 
 }
 
@@ -401,6 +436,9 @@ extension DocumentViewController: UISearchBarDelegate {
 		let t = textView.text ?? ""
 		textStorage.replaceCharacters(in: r, with: t)
 		
+		if syntaxLanguage == nil {//we need to call it manually if no syntax highlighting
+			didHighlight(NSRange(location: 0, length: 0), success: false)
+		}
 	}
 	
 	//we auto search so no real logic needs to go here
