@@ -33,19 +33,7 @@
                     <view key="view" contentMode="scaleToFill" id="SIE-Uh-Zny">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CdG-GK-gx0">
-                                <rect key="frame" x="0.0" y="64" width="355" height="603"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="CdG-GK-gx0" firstAttribute="bottom" secondItem="BoZ-jc-2Y8" secondAttribute="bottom" id="9lp-by-UHQ"/>
-                            <constraint firstItem="BoZ-jc-2Y8" firstAttribute="trailing" secondItem="CdG-GK-gx0" secondAttribute="trailing" constant="20" id="UjJ-RV-Nfx"/>
-                            <constraint firstItem="CdG-GK-gx0" firstAttribute="top" secondItem="BoZ-jc-2Y8" secondAttribute="top" id="mUW-e5-bjF"/>
-                            <constraint firstItem="CdG-GK-gx0" firstAttribute="leading" secondItem="SIE-Uh-Zny" secondAttribute="leading" id="uNn-UR-qKU"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="BoZ-jc-2Y8"/>
                     </view>
                     <navigationItem key="navigationItem" id="19f-Vj-mN9">
@@ -68,9 +56,6 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
-                    <connections>
-                        <outlet property="placeholderView" destination="CdG-GK-gx0" id="a1q-mG-Sx8"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rl9-ES-qQn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

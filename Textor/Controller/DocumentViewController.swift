@@ -16,9 +16,6 @@ var documentsClosed = 0
 class DocumentViewController: UIViewController {
 
 	
-	@IBOutlet weak var placeholderView: UIView!
-	
-	
 	var textView: UITextView!
 	var document: Document?
 	var tabSize = 0 //0 = tab, else number of spaces
@@ -50,25 +47,48 @@ class DocumentViewController: UIViewController {
 			layoutManager.addTextContainer(textContainer)
 			
 			textStorage.highlightDelegate = self
-			print(self.placeholderView.bounds)
-			textView = UITextView(frame: self.placeholderView.bounds, textContainer: textContainer)
+			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+			textView = UITextView(frame: frame, textContainer: textContainer)
+			//textView = UITextView(frame: self.placeholderView.bounds, textContainer: textContainer)
 			
 		} else {
-			
-			textView = UITextView(frame: self.placeholderView.bounds)
+			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+			textView = UITextView(frame: frame)
 		}
 		//self.placeholderView.addSubview(textView)
 //		let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height-400)
 //		self.textView.frame(forAlignmentRect: frame)
-		let h = self.textView.frame.height - CGFloat(25)
-		let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: h)
-		self.textView.frame = frame
+		//let h = self.textView.frame.height - CGFloat(25)
+		//let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: h)
+		//self.textView.frame = frame
 		
+	
 		
 		self.view.addSubview(textView)
 
 		textView.delegate = self
 		//END
+		
+//		NSLayoutConstraint.activate([
+//			textView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 400),
+//			textView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+//			textView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor, constant: 20),
+//			textView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor, constant: 0),
+////			textView.topAnchor.constraint(equalTo: self.view.topAnchor),
+////			textView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+////			textView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 20),
+////			textView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0),
+//		])
+		
+		self.textView!.translatesAutoresizingMaskIntoConstraints = false
+		
+		// create the constraints with the constant value you want.
+		let bSpace = NSLayoutConstraint(item: self.textView!, attribute: .bottom, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
+		let tSpace = NSLayoutConstraint(item: self.textView!, attribute: .top, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .top, multiplier: 1, constant: 0)
+		let lSpace = NSLayoutConstraint(item: self.textView!, attribute: .left, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .left, multiplier: 1, constant: 0)
+		let rSpace = NSLayoutConstraint(item: self.textView!, attribute: .right, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .right, multiplier: 1, constant: 0)
+		// activate the constraints
+		NSLayoutConstraint.activate([bSpace, tSpace, lSpace, rSpace])
 		
 		let bar = UIToolbar()
 		let tab = UIBarButtonItem(title:"Tab", style: .plain, target: self, action: #selector(tabButtonPressed))
@@ -91,13 +111,10 @@ class DocumentViewController: UIViewController {
 		standardBar = bar //set the class variable
 		
 		textView.inputAccessoryView = standardBar
+		textView.contentMode = .redraw
 		
 		self.navigationController?.view.tintColor = .appTintColor
 		self.view.tintColor = .appTintColor
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-		
 		
 		updateTheme()
 
@@ -116,10 +133,26 @@ class DocumentViewController: UIViewController {
 			let rect = textView.convert(state.keyboardFrameEnd, from: nil).intersection(textView.bounds)
 			
 			UIView.animate(withDuration: state.duration, delay: 0.0, options: state.options, animations: {
+				//legacy code start
+				//textView.contentInset.bottom = rect.height - self.view.safeAreaInsets.bottom
+				//textView.scrollIndicatorInsets.bottom = rect.height - self.view.safeAreaInsets.bottom
+				//end
 				
-				textView.contentInset.bottom = rect.height - self.view.safeAreaInsets.bottom
-				textView.scrollIndicatorInsets.bottom = rect.height - self.view.safeAreaInsets.bottom
-				
+				//new code- trying to solve hidden find options
+				print(state.type)
+				print(self.view.frame.height)
+				print(rect.height)
+				print(state.keyboardFrameEnd.height)
+				let x = textView.frame.minX //this is important for taking care of the notch on X
+				let y = textView.frame.minY
+				//let frame = CGRect(x: 0, y: 0, width: textView.frame.width, height: self.view.frame.height - rect.height)
+				if state.type == .didShow {
+					let frame = CGRect(x: x, y: y, width: textView.frame.width, height: self.view.frame.height - state.keyboardFrameEnd.height - y)
+					textView.frame = frame
+				} else if state.type == .didHide {
+					let frame = CGRect(x: x, y: y, width: textView.frame.width, height: self.view.frame.height - y)
+					textView.frame = frame
+				}
 			}, completion: nil)
 			
 		}
@@ -212,6 +245,8 @@ class DocumentViewController: UIViewController {
 			textView.autocapitalizationType = .sentences
 			textView.autocorrectionType = .default
 		}
+		self.view.layoutIfNeeded()
+		self.textView.layoutIfNeeded()
     }
 	
 	
@@ -325,28 +360,6 @@ class DocumentViewController: UIViewController {
         }
     }
 	
-	
-	@objc func keyboardWillShow(notification: NSNotification) {
-		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-			let h = self.textView.frame.height - keyboardSize.height
-			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: h)
-			self.textView.frame = frame
-			//self.textView.frame.origin.y -= keyboardSize.height
-			//self.view.frame.origin.y -= keyboardSize.height
-		}
-	}
-	
-	@objc func keyboardWillHide(notification: NSNotification) {
-		if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-			let h = self.textView.frame.height + keyboardSize.height
-			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: h)
-			self.textView.frame = frame
-			//self.textView.frame.origin.y -= keyboardSize.height
-			//self.view.frame.origin.y -= keyboardSize.height
-		}
-		//self.view.frame.origin.y = 0
-	}
-
 }
 
 //functions for the tools to use
@@ -390,24 +403,48 @@ extension DocumentViewController {
 	
 	
 	@objc func upButtonPressed(){
+		if let bar = textView.inputAccessoryView as? UIToolbar {
+			for item in bar.items ?? [] {
+				if let searchBar = item.customView as? UISearchBar {
+						searchBar.resignFirstResponder()
+				}
+			}
+		}
+
 		currentFind-=1
 		if currentFind == -1 {
 			currentFind = findRanges.count - 1
 		}
 		textView.selectedRange = findRanges[currentFind]
+		textView.setNeedsLayout()
 		textView.scrollRangeToVisible(findRanges[currentFind])
+		//textView.scro
 	}
 	
 	@objc func downButtonPressed(){
+		
+		if let bar = textView.inputAccessoryView as? UIToolbar {
+			for item in bar.items ?? [] {
+				if let searchBar = item.customView as? UISearchBar {
+					searchBar.resignFirstResponder()
+				}
+			}
+		}
+		
 		currentFind+=1
 		if currentFind == findRanges.count {
 			currentFind = 0
 		}
 		textView.selectedRange = findRanges[currentFind]
+		textView.setNeedsLayout()
 		textView.scrollRangeToVisible(findRanges[currentFind])
 		
 	}
 	
+	//CURRENT PROBLEM IS TO FIX SLIGHTLY OFF
+	//FIND
+	//TYPICALLY A BIT HIGH
+	//OR A BIT LOW
 	
 	@objc func doneButtonPressed(){
 		findRanges = []
@@ -423,7 +460,18 @@ extension DocumentViewController {
 		}
 		textView.inputAccessoryView = standardBar
 		textView.reloadInputViews()
+		
+		
+		//may also want to use a similar solution for removing the highlighting
+		//with each new key in textfield
+		let a = NSMutableAttributedString(attributedString: textView.attributedText)
+		a.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
+		a.removeAttribute(NSAttributedString.Key.foregroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
+		textView.attributedText = a
 	}
+	
+	
+
 }
 
 extension DocumentViewController: UISearchBarDelegate {
@@ -432,12 +480,14 @@ extension DocumentViewController: UISearchBarDelegate {
 	//when we search, we simply replace the whole view, so that the highlighr is called
 	//real highlighting the find words can be found there
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		let r = NSRange(location: 0, length: textView.text.count)
-		let t = textView.text ?? ""
-		textStorage.replaceCharacters(in: r, with: t)
+		//let r = NSRange(location: 0, length: textView.text.utf16.count)
+		//let t = textView.text ?? ""
+		//let r = NSRange(location: 0, length: t.count)
+		//textStorage.replaceCharacters(in: r, with: t)
+		textView.text = textView.text
 		
 		if syntaxLanguage == nil {//we need to call it manually if no syntax highlighting
-			didHighlight(NSRange(location: 0, length: 0), success: false)
+			didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 		}
 	}
 	
@@ -468,7 +518,6 @@ extension DocumentViewController: HighlightDelegate {
 					var regex: NSRegularExpression?
 					do {
 						try regex = NSRegularExpression(pattern: searchString, options: .caseInsensitive)
-						
 					} catch {
 						regex = nil
 					}
@@ -477,8 +526,13 @@ extension DocumentViewController: HighlightDelegate {
 							var attrs: [NSAttributedString.Key : Any] = [:]
 							attrs[NSAttributedString.Key.backgroundColor] = UIColor.yellow
 							attrs[NSAttributedString.Key.foregroundColor] = UIColor.black
-							textStorage.addAttributes(attrs, range: match.range)
-							
+							//this probably isn't needed
+							//can probably use the else for all cases
+							if UserDefaultsController.shared.isCodingMode {
+								textStorage.addAttributes(attrs, range: match.range)
+							} else {
+								textView.textStorage.addAttributes(attrs, range: match.range)
+							}
 							findRanges.append(match.range)
 						}
 					}
