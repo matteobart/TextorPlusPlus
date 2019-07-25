@@ -7,15 +7,15 @@ Since it is no longer being updated, I took it upon myself to add new features i
 * Undo/Redo
 * Tabs 2 Spaces
 * Spaces 2 Tabs
+* Find
 * Plenty of other coder friendly-features
 
 This version also has general bug fixes & updated syntax (Swift 5)
 
 ## Coming Soon
 Plenty of helpful text-editing tools such as:
- * Find
  * Find & Replace
- * Line Numbers
+ * Line Numbers Indicators ~Line Numbers Indicators~
  * Ability to change the theme of Syntax Highlighting
  * And plenty more 
 
