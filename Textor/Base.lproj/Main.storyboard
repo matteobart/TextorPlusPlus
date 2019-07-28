@@ -50,7 +50,7 @@
                             </barButtonItem>
                             <barButtonItem title="..." id="vEs-0l-0RO">
                                 <connections>
-                                    <action selector="moreButtonPressed:" destination="M2k-L8-Olo" id="uQx-Zr-2tK"/>
+                                    <action selector="toolsButtonPressed:" destination="M2k-L8-Olo" id="qYn-6S-dQO"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>

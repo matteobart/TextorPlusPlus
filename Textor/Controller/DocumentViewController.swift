@@ -22,11 +22,11 @@ class DocumentViewController: UIViewController {
 	var standardBar: UIToolbar?
 	var syntaxLanguage: String?
 
-	//FIND
+    
+	//FIND VARIABLES
 	//current one the user has selected
 	var currentFind = 0
-	//to get the number of find matches take the length
-	//of findRanges
+	//to get the number of find matches take the length of findRanges
 	var findRanges: [NSRange] = []
 
 	
@@ -36,7 +36,6 @@ class DocumentViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		//print(document?.fileURL.absoluteString)
 		//SET UP HIGHLIGHTR
 		if UserDefaultsController.shared.isCodingMode {
 			//syntax language set up in viewWillAppear
@@ -49,47 +48,28 @@ class DocumentViewController: UIViewController {
 			textStorage.highlightDelegate = self
 			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
 			textView = UITextView(frame: frame, textContainer: textContainer)
-			//textView = UITextView(frame: self.placeholderView.bounds, textContainer: textContainer)
-			
 		} else {
 			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
 			textView = UITextView(frame: frame)
 		}
-		//self.placeholderView.addSubview(textView)
-//		let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height-400)
-//		self.textView.frame(forAlignmentRect: frame)
-		//let h = self.textView.frame.height - CGFloat(25)
-		//let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: h)
-		//self.textView.frame = frame
-		
-	
-		
-		self.view.addSubview(textView)
 
-		textView.delegate = self
+		self.view.addSubview(textView)
 		//END
 		
-//		NSLayoutConstraint.activate([
-//			textView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 400),
-//			textView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
-//			textView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor, constant: 20),
-//			textView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor, constant: 0),
-////			textView.topAnchor.constraint(equalTo: self.view.topAnchor),
-////			textView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-////			textView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 20),
-////			textView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0),
-//		])
-		
-		self.textView!.translatesAutoresizingMaskIntoConstraints = false
-		
-		// create the constraints with the constant value you want.
+        textView.delegate = self
+		textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.contentMode = .redraw
+        textView.alwaysBounceVertical = true
+
+        //CONSTARINTS
 		let bSpace = NSLayoutConstraint(item: self.textView!, attribute: .bottom, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
 		let tSpace = NSLayoutConstraint(item: self.textView!, attribute: .top, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .top, multiplier: 1, constant: 0)
 		let lSpace = NSLayoutConstraint(item: self.textView!, attribute: .left, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .left, multiplier: 1, constant: 0)
 		let rSpace = NSLayoutConstraint(item: self.textView!, attribute: .right, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .right, multiplier: 1, constant: 0)
-		// activate the constraints
 		NSLayoutConstraint.activate([bSpace, tSpace, lSpace, rSpace])
-		
+		//END
+        
+        //SET UP TOOLBAR
 		let bar = UIToolbar()
 		let tab = UIBarButtonItem(title:"Tab", style: .plain, target: self, action: #selector(tabButtonPressed))
 		let undo = UIBarButtonItem(title: "Undo", style: .plain, target: self, action: #selector(undoButtonPressed))
@@ -102,6 +82,7 @@ class DocumentViewController: UIViewController {
 		} else {
 			bar.barTintColor = .white
 		}
+        
 		redo.isEnabled = textView.undoManager?.canRedo ?? false
 		undo.isEnabled = textView.undoManager?.canUndo ?? false
 		bar.isTranslucent = true
@@ -111,16 +92,16 @@ class DocumentViewController: UIViewController {
 		standardBar = bar //set the class variable
 		
 		textView.inputAccessoryView = standardBar
-		textView.contentMode = .redraw
+        //END
+        
 		
 		self.navigationController?.view.tintColor = .appTintColor
 		self.view.tintColor = .appTintColor
 		
 		updateTheme()
 
-		textView.alwaysBounceVertical = true
 		
-		keyboardObserver.observe { [weak self] (state) in
+		keyboardObserver.observe { [weak self] (state) in //this make sure that the textView resizes on keyboard appearing
 			
 			guard let textView = self?.textView else {
 				return
@@ -133,19 +114,13 @@ class DocumentViewController: UIViewController {
 			let rect = textView.convert(state.keyboardFrameEnd, from: nil).intersection(textView.bounds)
 			
 			UIView.animate(withDuration: state.duration, delay: 0.0, options: state.options, animations: {
-				//legacy code start
+				//LEGACY CODE START
 				//textView.contentInset.bottom = rect.height - self.view.safeAreaInsets.bottom
 				//textView.scrollIndicatorInsets.bottom = rect.height - self.view.safeAreaInsets.bottom
-				//end
+				//END
 				
-				//new code- trying to solve hidden find options
-				print(state.type)
-				print(self.view.frame.height)
-				print(rect.height)
-				print(state.keyboardFrameEnd.height)
 				let x = textView.frame.minX //this is important for taking care of the notch on X
 				let y = textView.frame.minY
-				//let frame = CGRect(x: 0, y: 0, width: textView.frame.width, height: self.view.frame.height - rect.height)
 				if state.type == .didShow {
 					let frame = CGRect(x: x, y: y, width: textView.frame.width, height: self.view.frame.height - state.keyboardFrameEnd.height - y)
 					textView.frame = frame
@@ -252,14 +227,14 @@ class DocumentViewController: UIViewController {
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-
+        //used to ask for review, commented during testing
+        /*
 		documentsClosed += 1
-
 		if !hasAskedForReview && documentsClosed >= 4 {
 			hasAskedForReview = true
 			SKStoreReviewController.requestReview()
 		}
-
+         */
 	}
 
 	@IBAction func shareDocument(_ sender: UIBarButtonItem) {
@@ -287,7 +262,7 @@ class DocumentViewController: UIViewController {
 		self.present(activityVC, animated: true, completion: nil)
 	}
 
-	@objc func tabButtonPressed () {
+	@objc func tabButtonPressed() {
 		let spot = textView.selectedRange.upperBound
 		var add = ""
 		if tabSize == 0 {
@@ -332,38 +307,30 @@ class DocumentViewController: UIViewController {
 		}
 	}
 
-	@IBAction func moreButtonPressed(_ sender: UIBarButtonItem) {
+	@IBAction func toolsButtonPressed(_ sender: UIBarButtonItem) {
 		let toolsVC = self.storyboard!.instantiateViewController(withIdentifier: "ToolsViewController") as! ToolsTableViewController
 		toolsVC.completeFilename = document?.fileURL.absoluteString
 		toolsVC.documentVC = self
 		let navCon = UINavigationController(rootViewController: toolsVC)
 		navCon.modalPresentationStyle = .formSheet
-		
 		self.present(navCon, animated: true, completion: nil)
-
 	}
 	
-
 	
 	@IBAction func dismissDocumentViewController() {
-
 		let currentText = self.document?.text ?? ""
-
 		self.document?.text = self.textView.text
-
 		if currentText != self.textView.text {
 			self.document?.updateChangeCount(.done)
 		}
-
         dismiss(animated: true) {
             self.document?.close(completionHandler: nil)
         }
     }
-	
 }
 
-//functions for the tools to use
-//Find, Replace, Etc
+//METHODS FOR TOOLS
+//FIND, REPLACE, ETC
 extension DocumentViewController {
 	//currently only converts 4 spaces -> 1 tab
 	func switchToTabs(){
@@ -384,14 +351,14 @@ extension DocumentViewController {
 		textView.text = text
 	}
 	
-	func find(_ searchFor: String){
+	func activateFind(){
 		let bar = UIToolbar()
 		let up = UIBarButtonItem(title: "/\\", style: .plain, target: self, action: #selector(upButtonPressed))
 		let down = UIBarButtonItem(title: "\\/", style: .plain, target: self, action: #selector(downButtonPressed))
 		let searchField = UISearchBar(frame: CGRect(x: 0, y: 0, width: 150, height: 20))
 		searchField.delegate = self
 		let search = UIBarButtonItem(customView: searchField)
-		let done = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneButtonPressed))
+		let done = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(searchBarDoneButtonPressed))
 		let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 		bar.items = [up, down, space, search, done]
 		bar.sizeToFit()
@@ -403,6 +370,7 @@ extension DocumentViewController {
 	
 	
 	@objc func upButtonPressed(){
+        //remove the keyboard for the search bar
 		if let bar = textView.inputAccessoryView as? UIToolbar {
 			for item in bar.items ?? [] {
 				if let searchBar = item.customView as? UISearchBar {
@@ -418,11 +386,10 @@ extension DocumentViewController {
 		textView.selectedRange = findRanges[currentFind]
 		textView.setNeedsLayout()
 		textView.scrollRangeToVisible(findRanges[currentFind])
-		//textView.scro
 	}
 	
 	@objc func downButtonPressed(){
-		
+        //remove the keyboard for the search bar
 		if let bar = textView.inputAccessoryView as? UIToolbar {
 			for item in bar.items ?? [] {
 				if let searchBar = item.customView as? UISearchBar {
@@ -438,19 +405,13 @@ extension DocumentViewController {
 		textView.selectedRange = findRanges[currentFind]
 		textView.setNeedsLayout()
 		textView.scrollRangeToVisible(findRanges[currentFind])
-		
 	}
 	
-	//CURRENT PROBLEM IS TO FIX SLIGHTLY OFF
-	//FIND
-	//TYPICALLY A BIT HIGH
-	//OR A BIT LOW
-	
-	@objc func doneButtonPressed(){
+	@objc func searchBarDoneButtonPressed(){
 		findRanges = []
 		currentFind = 0
 		
-		//remove the find tool bar
+		//remove the search keyboard
 		if let bar = textView.inputAccessoryView as? UIToolbar {
 			for item in bar.items ?? [] {
 				if let search = item.customView as? UISearchBar {
@@ -476,17 +437,13 @@ extension DocumentViewController {
 
 extension DocumentViewController: UISearchBarDelegate {
 
-	//a bit wonky but...
-	//when we search, we simply replace the whole view, so that the highlighr is called
-	//real highlighting the find words can be found there
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		//let r = NSRange(location: 0, length: textView.text.utf16.count)
-		//let t = textView.text ?? ""
-		//let r = NSRange(location: 0, length: t.count)
-		//textStorage.replaceCharacters(in: r, with: t)
+		//a bit wonky but...
+		//when we search, we simply replace the whole view, so that the highlighr is called
 		textView.text = textView.text
 		
 		if syntaxLanguage == nil {//we need to call it manually if no syntax highlighting
+			//may not need to do this, if everyone has a textStorage
 			didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 		}
 	}
@@ -499,10 +456,10 @@ extension DocumentViewController: UISearchBarDelegate {
 }
 
 extension DocumentViewController: HighlightDelegate {
+	
 	//this function essentially gets called whenever text is added
 	//this is the place to add more color on top of the highlighting
 	func didHighlight(_ range: NSRange, success: Bool) {
-		
 		
 		//keep the highlighted text highlighted
 		//look for a search bar, if there is one then...
@@ -544,15 +501,14 @@ extension DocumentViewController: HighlightDelegate {
 
 extension DocumentViewController: UITextViewDelegate {
 	
-	//PLEASE FIX, SWIFT WAS GIVING ME SO MUCH CRAP
-	//GIVEN A textView and a range, grab the lowerbound of the range
+    //this function can always use a refactoring
+    //given a textView and the spot (position)
 	//Get the preceding space/tabs in the line
-	func getBeginningSpacing(_ textView: UITextView, range: NSRange) -> String {
+	func getBeginningSpacing(_ textView: UITextView, spot: Int) -> String {
 		
 		let text = textView.text!
-		let findBefore = range.lowerBound
 		var searchText = ""
-		for char in text.prefix(findBefore).reversed() {
+		for char in text.prefix(spot).reversed() {
 			if char != "\n" {
 				searchText = String(char) + searchText
 			} else {
@@ -561,7 +517,7 @@ extension DocumentViewController: UITextViewDelegate {
 		}
 		var ret = ""
 		for char in searchText {
-			if char == " " || char == "\t" {
+			if char == " " || char == "\t" { //doesn't discriminate between types of spaces
 				ret = ret + String(char)
 			} else {
 				break
@@ -570,6 +526,7 @@ extension DocumentViewController: UITextViewDelegate {
 		return ret
 	}
 	
+    //can be potentially removed when there is a greater dependency on the textStorage
 	func addText(to textView: UITextView, add: String, inPosition: Int) {
 		let text = textView.text!
 		let textLength = text.count
@@ -577,10 +534,8 @@ extension DocumentViewController: UITextViewDelegate {
 	}
 	
 
-	
 	//this gets called when anything gets called is added to textview
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-		
 		//first update the undo/redo button
 		if let bar = textView.inputAccessoryView as? UIToolbar {
 			for item in bar.items ?? [] {
@@ -596,17 +551,15 @@ extension DocumentViewController: UITextViewDelegate {
 		//check what they are typing, to see if you must
 		//change it
 		if UserDefaultsController.shared.isCodingMode {
-			
 			if (text == "") { //so deleting works properly
 				return true
 			} else if (text == "\n") { //keep tabbing the same
-				let spaces = getBeginningSpacing(textView, range: range)
+				let spaces = getBeginningSpacing(textView, spot: range.lowerBound)
 				addText(to: textView, add: "\n" + spaces, inPosition: range.upperBound)
 				//put cursor where it should be
 				let cursorPosition = range.upperBound + 1 + spaces.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
-				//textViewDidChange()
 				return false
 			} else if (text == "\t") {
 				//just ignore a regular tab
@@ -614,7 +567,6 @@ extension DocumentViewController: UITextViewDelegate {
 				let cursorPosition = range.upperBound + (tabSize==0 ? 1 : tabSize)
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
-				//textViewDidChange()
 				return false
 			} else { //just make sure that there is no curly quotes
 				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
@@ -623,22 +575,15 @@ extension DocumentViewController: UITextViewDelegate {
 				let cursorPosition = range.upperBound + newText.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
-				//textViewDidChange()
 				return false
-				
 			}
 		}
-		
-		
 		return true
 	}
 	
 	func textViewDidEndEditing(_ textView: UITextView) {
-		
 		let currentText = self.document?.text ?? ""
-		
 		self.document?.text = self.textView.text
-		
 		if currentText != self.textView.text {
 			self.document?.updateChangeCount(.done)
 		}
