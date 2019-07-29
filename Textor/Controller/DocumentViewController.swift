@@ -37,21 +37,17 @@ class DocumentViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		//SET UP HIGHLIGHTR
-		if UserDefaultsController.shared.isCodingMode {
-			//syntax language set up in viewWillAppear
-			let layoutManager = NSLayoutManager()
-			textStorage.addLayoutManager(layoutManager)
-			
-			let textContainer = NSTextContainer(size: view.bounds.size)
-			layoutManager.addTextContainer(textContainer)
-			
-			textStorage.highlightDelegate = self
-			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
-			textView = UITextView(frame: frame, textContainer: textContainer)
-		} else {
-			let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
-			textView = UITextView(frame: frame)
-		}
+		//syntax language set up in viewWillAppear
+		let layoutManager = NSLayoutManager()
+		textStorage.addLayoutManager(layoutManager)
+		
+		let textContainer = NSTextContainer(size: view.bounds.size)
+		layoutManager.addTextContainer(textContainer)
+		
+		textStorage.highlightDelegate = self
+		let frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height)
+		textView = UITextView(frame: frame, textContainer: textContainer)
+
 
 		self.view.addSubview(textView)
 		//END
@@ -111,7 +107,7 @@ class DocumentViewController: UIViewController {
 				return
 			}
 			
-			let rect = textView.convert(state.keyboardFrameEnd, from: nil).intersection(textView.bounds)
+			//let rect = textView.convert(state.keyboardFrameEnd, from: nil).intersection(textView.bounds)
 			
 			UIView.animate(withDuration: state.duration, delay: 0.0, options: state.options, animations: {
 				//LEGACY CODE START
@@ -165,12 +161,11 @@ class DocumentViewController: UIViewController {
 	
 	private func updateTheme() {
 		
-		let font = UserDefaultsController.shared.font
+		let fontName = UserDefaultsController.shared.font
 		let fontSize = UserDefaultsController.shared.fontSize
-		textView.font = UIFont(name: font, size: fontSize)
-		if textView.font != nil {
-			textStorage.highlightr.theme.setCodeFont(textView.font!)
-		}
+		let font = UIFont(name: fontName, size: fontSize)!
+		textView.font = font
+		textStorage.highlightr.theme.setCodeFont(font)
 		if UserDefaultsController.shared.isDarkMode {
 			textView.textColor = .white
 			textView.backgroundColor = .darkBackgroundColor
@@ -216,7 +211,9 @@ class DocumentViewController: UIViewController {
 			//set up keyboard
 			textView.autocapitalizationType = .none
 			textView.autocorrectionType = .no
-		} else {
+		} else { //no coding mode... no highlighting, autocorrect on
+			syntaxLanguage = nil
+			textStorage.language = nil
 			textView.autocapitalizationType = .sentences
 			textView.autocorrectionType = .default
 		}
@@ -263,14 +260,14 @@ class DocumentViewController: UIViewController {
 	}
 
 	@objc func tabButtonPressed() {
-		let spot = textView.selectedRange.upperBound
+		//let spot = textView.selectedRange.upperBound
 		var add = ""
 		if tabSize == 0 {
 			add = "\t"
 		} else {
 			add = String.init(repeating: " ", count: tabSize)
 		}
-		addText(to: textView, add: add, inPosition: spot)
+		textStorage.replaceCharacters(in: textView.selectedRange, with: add)
 	}
 	
 	@objc func undoButtonPressed(button: UIBarButtonItem) {
@@ -442,6 +439,7 @@ extension DocumentViewController: UISearchBarDelegate {
 		//when we search, we simply replace the whole view, so that the highlighr is called
 		textView.text = textView.text
 		
+		//TEST THIS
 		if syntaxLanguage == nil {//we need to call it manually if no syntax highlighting
 			//may not need to do this, if everyone has a textStorage
 			didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
@@ -483,13 +481,7 @@ extension DocumentViewController: HighlightDelegate {
 							var attrs: [NSAttributedString.Key : Any] = [:]
 							attrs[NSAttributedString.Key.backgroundColor] = UIColor.yellow
 							attrs[NSAttributedString.Key.foregroundColor] = UIColor.black
-							//this probably isn't needed
-							//can probably use the else for all cases
-							if UserDefaultsController.shared.isCodingMode {
-								textStorage.addAttributes(attrs, range: match.range)
-							} else {
-								textView.textStorage.addAttributes(attrs, range: match.range)
-							}
+							textStorage.addAttributes(attrs, range: match.range)
 							findRanges.append(match.range)
 						}
 					}
@@ -526,14 +518,6 @@ extension DocumentViewController: UITextViewDelegate {
 		return ret
 	}
 	
-    //can be potentially removed when there is a greater dependency on the textStorage
-	func addText(to textView: UITextView, add: String, inPosition: Int) {
-		let text = textView.text!
-		let textLength = text.count
-		textView.text = text.prefix(inPosition) + add + text.suffix(textLength - inPosition)
-	}
-	
-
 	//this gets called when anything gets called is added to textview
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
 		//first update the undo/redo button
@@ -555,7 +539,8 @@ extension DocumentViewController: UITextViewDelegate {
 				return true
 			} else if (text == "\n") { //keep tabbing the same
 				let spaces = getBeginningSpacing(textView, spot: range.lowerBound)
-				addText(to: textView, add: "\n" + spaces, inPosition: range.upperBound)
+				textStorage.replaceCharacters(in: range, with: "\n" + spaces)
+				
 				//put cursor where it should be
 				let cursorPosition = range.upperBound + 1 + spaces.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
@@ -564,13 +549,16 @@ extension DocumentViewController: UITextViewDelegate {
 			} else if (text == "\t") {
 				//just ignore a regular tab
 				tabButtonPressed()
+				
+				//put the cursor where it should be
 				let cursorPosition = range.upperBound + (tabSize==0 ? 1 : tabSize)
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
 				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
 				return false
 			} else { //just make sure that there is no curly quotes
 				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
-				addText(to: textView, add: newText, inPosition: range.upperBound)
+				textStorage.replaceCharacters(in: range, with: newText)
+			
 				//put cursor where it should be
 				let cursorPosition = range.upperBound + newText.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
