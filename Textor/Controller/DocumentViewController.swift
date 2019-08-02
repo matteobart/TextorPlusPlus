@@ -324,6 +324,11 @@ class DocumentViewController: UIViewController {
             self.document?.close(completionHandler: nil)
         }
     }
+	
+	func removeAttributes(){
+		textStorage.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
+		textStorage.removeAttribute(NSAttributedString.Key.foregroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
+	}
 }
 
 //METHODS FOR TOOLS
@@ -418,14 +423,8 @@ extension DocumentViewController {
 		}
 		textView.inputAccessoryView = standardBar
 		textView.reloadInputViews()
-		
-		
-		//may also want to use a similar solution for removing the highlighting
-		//with each new key in textfield
-		let a = NSMutableAttributedString(attributedString: textView.attributedText)
-		a.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
-		a.removeAttribute(NSAttributedString.Key.foregroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
-		textView.attributedText = a
+
+		removeAttributes()
 	}
 	
 	
@@ -435,13 +434,9 @@ extension DocumentViewController {
 extension DocumentViewController: UISearchBarDelegate {
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		//a bit wonky but...
-		//when we search, we simply replace the whole view, so that the highlighr is called
-		textView.text = textView.text
+		removeAttributes()
 		
-		//TEST THIS
 		if syntaxLanguage == nil {//we need to call it manually if no syntax highlighting
-			//may not need to do this, if everyone has a textStorage
 			didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 		}
 	}
@@ -455,7 +450,7 @@ extension DocumentViewController: UISearchBarDelegate {
 
 extension DocumentViewController: HighlightDelegate {
 	
-	//this function essentially gets called whenever text is added
+	//this function essentially gets called whenever text is added or highlighted
 	//this is the place to add more color on top of the highlighting
 	func didHighlight(_ range: NSRange, success: Bool) {
 		
@@ -541,6 +536,10 @@ extension DocumentViewController: UITextViewDelegate {
 				let spaces = getBeginningSpacing(textView, spot: range.lowerBound)
 				textStorage.replaceCharacters(in: range, with: "\n" + spaces)
 				
+				if syntaxLanguage == nil { //when no highlighting the method won't be called
+					removeAttributes()
+					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
+				}
 				//put cursor where it should be
 				let cursorPosition = range.upperBound + 1 + spaces.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
@@ -549,7 +548,10 @@ extension DocumentViewController: UITextViewDelegate {
 			} else if (text == "\t") {
 				//just ignore a regular tab
 				tabButtonPressed()
-				
+				if syntaxLanguage == nil { //when no highlighting the method won't be called
+					removeAttributes()
+					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
+				}
 				//put the cursor where it should be
 				let cursorPosition = range.upperBound + (tabSize==0 ? 1 : tabSize)
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
@@ -558,7 +560,10 @@ extension DocumentViewController: UITextViewDelegate {
 			} else { //just make sure that there is no curly quotes
 				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
 				textStorage.replaceCharacters(in: range, with: newText)
-			
+				if syntaxLanguage == nil { //when no highlighting the method won't be called
+					removeAttributes()
+					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
+				}
 				//put cursor where it should be
 				let cursorPosition = range.upperBound + newText.count
 				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
@@ -568,6 +573,8 @@ extension DocumentViewController: UITextViewDelegate {
 		}
 		return true
 	}
+	
+
 	
 	func textViewDidEndEditing(_ textView: UITextView) {
 		let currentText = self.document?.text ?? ""
