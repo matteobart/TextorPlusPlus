@@ -99,6 +99,11 @@ class ToolsTableViewController: UITableViewController {
 			self.dismiss(animated: true, completion: nil)
 		case (0, 1): //Find & Replace
 			print("FindN")
+		case (0, 2): //Document Statistics
+			print("Stats")
+			let statsVC = self.storyboard!.instantiateViewController(withIdentifier: "StatsViewController") as! StatisticsViewController
+			statsVC.text = documentVC!.textView.text
+			self.show(statsVC, sender: nil)
 		case (1, 0): //Current Language
 			let langVC = self.storyboard!.instantiateViewController(withIdentifier: "SyntaxViewController") as! SytanxTableViewController
 			langVC.completeFilename = completeFilename
