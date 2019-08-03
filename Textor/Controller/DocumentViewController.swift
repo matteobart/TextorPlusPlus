@@ -78,9 +78,10 @@ class DocumentViewController: UIViewController {
 		} else {
 			bar.barTintColor = .white
 		}
-        
+		//need to dot his manually here
+        undo.isEnabled = textView.undoManager?.canUndo ?? false
 		redo.isEnabled = textView.undoManager?.canRedo ?? false
-		undo.isEnabled = textView.undoManager?.canUndo ?? false
+		
 		bar.isTranslucent = true
 		bar.items = [tab, space, undo, redo]
 		bar.sizeToFit()
@@ -267,17 +268,30 @@ class DocumentViewController: UIViewController {
 		} else {
 			add = String.init(repeating: " ", count: tabSize)
 		}
-		textStorage.replaceCharacters(in: textView.selectedRange, with: add)
+		textView.replace(textView.selectedTextRange!, withText: add)
 	}
 	
 	@objc func undoButtonPressed(button: UIBarButtonItem) {
 		textView.undoManager?.undo()
-		button.isEnabled = textView.undoManager?.canUndo ?? false
+		updateUndoButtons()
 	}
 	
 	@objc func redoButtonPressed(button: UIBarButtonItem) {
 		textView.undoManager?.redo()
-		button.isEnabled = textView.undoManager?.canRedo ?? false
+		updateUndoButtons()
+	}
+	
+	
+	func updateUndoButtons() {
+		if let bar = textView.inputAccessoryView as? UIToolbar {
+			for item in bar.items ?? [] {
+				if item.title == "Undo" {
+					item.isEnabled = textView.undoManager?.canUndo ?? false
+				} else if item.title == "Redo" {
+					item.isEnabled = textView.undoManager?.canRedo ?? false
+				}
+			}
+		}
 	}
 	
 	//ADD MORE TO LIST
@@ -453,7 +467,9 @@ extension DocumentViewController: HighlightDelegate {
 	//this function essentially gets called whenever text is added or highlighted
 	//this is the place to add more color on top of the highlighting
 	func didHighlight(_ range: NSRange, success: Bool) {
-		
+		//update the buttons here too
+		updateUndoButtons()
+
 		//keep the highlighted text highlighted
 		//look for a search bar, if there is one then...
  		if let bar = textView.inputAccessoryView as? UIToolbar {
@@ -516,17 +532,8 @@ extension DocumentViewController: UITextViewDelegate {
 	//this gets called when anything gets called is added to textview
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
 		//first update the undo/redo button
-		if let bar = textView.inputAccessoryView as? UIToolbar {
-			for item in bar.items ?? [] {
-				if item.title == "Undo" {
-					item.isEnabled = textView.undoManager?.canUndo ?? false
-				} else if item.title == "Redo" {
-					item.isEnabled = textView.undoManager?.canRedo ?? false
-				}
-			}
-		}
+		updateUndoButtons()
 		
-
 		//check what they are typing, to see if you must
 		//change it
 		if UserDefaultsController.shared.isCodingMode {
@@ -534,16 +541,11 @@ extension DocumentViewController: UITextViewDelegate {
 				return true
 			} else if (text == "\n") { //keep tabbing the same
 				let spaces = getBeginningSpacing(textView, spot: range.lowerBound)
-				textStorage.replaceCharacters(in: range, with: "\n" + spaces)
-				
+				textView.replace(range.toTextRange(textInput: textView)!, withText: "\n"+spaces)
 				if syntaxLanguage == nil { //when no highlighting the method won't be called
 					removeAttributes()
 					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 				}
-				//put cursor where it should be
-				let cursorPosition = range.upperBound + 1 + spaces.count
-				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
-				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
 				return false
 			} else if (text == "\t") {
 				//just ignore a regular tab
@@ -552,22 +554,14 @@ extension DocumentViewController: UITextViewDelegate {
 					removeAttributes()
 					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 				}
-				//put the cursor where it should be
-				let cursorPosition = range.upperBound + (tabSize==0 ? 1 : tabSize)
-				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
-				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
 				return false
 			} else { //just make sure that there is no curly quotes
 				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
-				textStorage.replaceCharacters(in: range, with: newText)
+				textView.replace(range.toTextRange(textInput: textView)!, withText: newText)
 				if syntaxLanguage == nil { //when no highlighting the method won't be called
 					removeAttributes()
 					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 				}
-				//put cursor where it should be
-				let cursorPosition = range.upperBound + newText.count
-				let textPosition = textView.position(from: textView.beginningOfDocument, offset: cursorPosition)
-				textView.selectedTextRange = textView.textRange(from: textPosition!, to: textPosition!)
 				return false
 			}
 		}
@@ -593,4 +587,14 @@ extension DocumentViewController: StoryboardIdentifiable {
 		return "DocumentViewController"
 	}
 	
+}
+
+extension NSRange {
+	func toTextRange(textInput:UITextInput) -> UITextRange? {
+		if let rangeStart = textInput.position(from: textInput.beginningOfDocument, offset: location),
+			let rangeEnd = textInput.position(from: rangeStart, offset: length) {
+			return textInput.textRange(from: rangeStart, to: rangeEnd)
+		}
+		return nil
+	}
 }

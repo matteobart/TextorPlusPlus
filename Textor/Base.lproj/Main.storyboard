@@ -760,7 +760,6 @@
                             <constraint firstItem="5jK-dz-iA6" firstAttribute="centerX" secondItem="Oux-i0-Itf" secondAttribute="centerX" id="YZk-2w-iFv"/>
                             <constraint firstItem="wAH-dG-lP5" firstAttribute="leading" secondItem="Oux-i0-Itf" secondAttribute="leading" constant="16" id="cs1-UH-0Qb"/>
                             <constraint firstItem="wAH-dG-lP5" firstAttribute="top" secondItem="Oux-i0-Itf" secondAttribute="top" constant="10" id="qpH-68-1Uk"/>
-                            <constraint firstItem="WJf-es-Qcu" firstAttribute="leading" secondItem="wAH-dG-lP5" secondAttribute="trailing" constant="-49.5" id="vmO-4c-y0B"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Oux-i0-Itf"/>
                     </view>
