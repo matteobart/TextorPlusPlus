@@ -339,9 +339,16 @@ class DocumentViewController: UIViewController {
         }
     }
 	
+	//this function will remove the attributes, and then ask highlightr to rehighlight
 	func removeAttributes(){
+		//ideally, we can remove attributes like below, and then manually trigger the rehighlight
+		//this needs to be here for when no syntax highlighting
 		textStorage.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
 		textStorage.removeAttribute(NSAttributedString.Key.foregroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
+		//if statement is needed here so that cursor doesn't move for non-coding mode
+		if syntaxLanguage != nil { //only needs to be done if highlightr is on
+			textView.text = textView.text //while stupid, this is the only way for us to manually call the highlightr
+		}
 	}
 }
 
@@ -395,13 +402,17 @@ extension DocumentViewController {
 			}
 		}
 
-		currentFind-=1
-		if currentFind == -1 {
-			currentFind = findRanges.count - 1
+		if currentFind == 0 {
+			currentFind = findRanges.count-1
+		} else {
+			currentFind-=1
 		}
-		textView.selectedRange = findRanges[currentFind]
-		textView.setNeedsLayout()
-		textView.scrollRangeToVisible(findRanges[currentFind])
+		
+		if findRanges != [] {
+			textView.selectedRange = findRanges[currentFind]
+			textView.setNeedsLayout()
+			textView.scrollRangeToVisible(findRanges[currentFind])
+		}
 	}
 	
 	@objc func downButtonPressed(){
@@ -414,13 +425,16 @@ extension DocumentViewController {
 			}
 		}
 		
-		currentFind+=1
-		if currentFind == findRanges.count {
+		if currentFind == findRanges.count-1 {
 			currentFind = 0
+		} else {
+			currentFind+=1
 		}
-		textView.selectedRange = findRanges[currentFind]
-		textView.setNeedsLayout()
-		textView.scrollRangeToVisible(findRanges[currentFind])
+		if findRanges != [] {
+			textView.selectedRange = findRanges[currentFind]
+			textView.setNeedsLayout()
+			textView.scrollRangeToVisible(findRanges[currentFind])
+		}
 	}
 	
 	@objc func searchBarDoneButtonPressed(){
@@ -437,7 +451,9 @@ extension DocumentViewController {
 		}
 		textView.inputAccessoryView = standardBar
 		textView.reloadInputViews()
-
+		
+		//this will remove the current attributes
+		//then ask rehighlightr to highlight
 		removeAttributes()
 	}
 	
@@ -448,6 +464,8 @@ extension DocumentViewController {
 extension DocumentViewController: UISearchBarDelegate {
 
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+		//this will remove the current attributes
+		//then ask highlightr to highlight -> will yellow highlight over it
 		removeAttributes()
 		
 		if syntaxLanguage == nil {//we need to call it manually if no syntax highlighting
@@ -542,7 +560,7 @@ extension DocumentViewController: UITextViewDelegate {
 			} else if (text == "\n") { //keep tabbing the same
 				let spaces = getBeginningSpacing(textView, spot: range.lowerBound)
 				textView.replace(range.toTextRange(textInput: textView)!, withText: "\n"+spaces)
-				if syntaxLanguage == nil { //when no highlighting the method won't be called
+				if syntaxLanguage == nil { //when no highlighting the methods won't be called
 					removeAttributes()
 					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 				}
@@ -550,7 +568,7 @@ extension DocumentViewController: UITextViewDelegate {
 			} else if (text == "\t") {
 				//just ignore a regular tab
 				tabButtonPressed()
-				if syntaxLanguage == nil { //when no highlighting the method won't be called
+				if syntaxLanguage == nil { //when no highlighting the methods won't be called
 					removeAttributes()
 					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 				}
@@ -558,7 +576,7 @@ extension DocumentViewController: UITextViewDelegate {
 			} else { //just make sure that there is no curly quotes
 				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
 				textView.replace(range.toTextRange(textInput: textView)!, withText: newText)
-				if syntaxLanguage == nil { //when no highlighting the method won't be called
+				if syntaxLanguage == nil { //when no highlighting the methods won't be called
 					removeAttributes()
 					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 				}
@@ -568,7 +586,15 @@ extension DocumentViewController: UITextViewDelegate {
 		return true
 	}
 	
-
+	//this is only used for non-coding mode, to make sure that the find words get highlighted
+	//this method is only called when the above method (textView willChangeText)returns true
+	func textViewDidChange(_ textView: UITextView) {
+		if !UserDefaultsController.shared.isCodingMode {
+			removeAttributes()
+			didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
+		}
+		
+	}
 	
 	func textViewDidEndEditing(_ textView: UITextView) {
 		let currentText = self.document?.text ?? ""
