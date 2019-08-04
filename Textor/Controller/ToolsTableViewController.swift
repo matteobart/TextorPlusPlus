@@ -98,7 +98,36 @@ class ToolsTableViewController: UITableViewController {
 			documentVC?.activateFind()
 			self.dismiss(animated: true, completion: nil)
 		case (0, 1): //Find & Replace
-			print("FindN")
+			print("FindNRepl")
+			//1. Create the alert controller.
+			let alert = UIAlertController(title: "Replace", message: "Specify what text you should replace", preferredStyle: .alert)
+			
+			//2. Add the text field. You can configure it however you need.
+			alert.addTextField { (textField) in
+				textField.placeholder = "this"
+				
+			}
+			
+			alert.addTextField { (textField) in
+				textField.placeholder = "with that"
+			}
+			
+			
+			// 3. Grab the value from the text field, and print it when the user clicks OK.
+			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+				let textField1 = alert?.textFields![0] // Force unwrapping because we know it exists.
+				let textField2 = alert?.textFields![1]
+				if textField1!.text != nil && textField1!.text! != "" && textField2!.text != nil && textField2!.text! != "" {
+					self.documentVC?.replace(this: textField1!.text!, withThat: textField2!.text!)
+				}
+				
+			}))
+			
+			alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+
+			
+			// 4. Present the alert.
+			self.present(alert, animated: true, completion: nil)
 		case (0, 2): //Document Statistics
 			print("Stats")
 			let statsVC = self.storyboard!.instantiateViewController(withIdentifier: "StatsViewController") as! StatisticsViewController
@@ -117,8 +146,11 @@ class ToolsTableViewController: UITableViewController {
 		case (1, 3): //convert spaces to tabs
 			documentVC?.switchToTabs()
 			self.dismiss(animated: true, completion: nil)
-		case (1, 4): //conver curly to quotes
+		case (1, 4): //convert curly to quotes
 			documentVC?.removeCurlyQuotes()
+			self.dismiss(animated: true, completion: nil)
+		case (1, 5): //remove trailing white spaces
+			documentVC?.removeTrailingSpaces()
 			self.dismiss(animated: true, completion: nil)
 		default:
 			print("No selection")

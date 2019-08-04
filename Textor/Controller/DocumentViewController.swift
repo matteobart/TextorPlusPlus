@@ -443,6 +443,33 @@ extension DocumentViewController {
 		textView.text = text
 	}
 	
+	func removeTrailingSpaces(){
+		let text = textView.text
+		var arrText = text?.split(separator: "\n")
+		if arrText != nil {
+			for lineNumber in 0..<arrText!.count {
+				for char in arrText![lineNumber].reversed() {
+					if char == " " || char == "\t" {
+						arrText![lineNumber] = arrText![lineNumber].prefix(arrText![lineNumber].count-1)
+					} else {
+						break
+					}
+				}
+				
+			}
+		}
+		var newText = ""
+		for line in arrText! {
+			newText+=line+"\n"
+		}
+		textView.text = newText
+	}
+	
+	func replace(this str: String, withThat replacement: String) {
+		let text = textView.text
+		textView.text = text?.replacingOccurrences(of: str, with: replacement)
+	}
+	
 	@objc func activateFind(){
 		let bar = UIToolbar()
 		let up = UIBarButtonItem(title: "/\\", style: .plain, target: self, action: #selector(upButtonPressed))

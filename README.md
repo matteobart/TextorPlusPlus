@@ -8,22 +8,22 @@ Since it is no longer being updated, I took it upon myself to add new features i
 * Tabs 2 Spaces
 * Spaces 2 Tabs
 * Find
+* Find & Replace
 * Plenty of other coder friendly-features
+
+For iPad users: 
+* Key bindings
+* Optimized views for iPad
 
 This version also has general bug fixes & updated syntax (Swift 5)
 
 ## Coming Soon
 Plenty of helpful text-editing tools such as:
- * Find & Replace
- * Line Numbers Indicators ~Line Numbers Indicators~
+ * Line Numbers Indicators ~Line Numbers~
  * Ability to change the theme of Syntax Highlighting
  * And plenty more 
 
-For iPad users: 
- * Key bindings
- * Optimized views for iPad
- 
- ## Future Future Features
+## Future Future Features
  * Tabs! (multiple files open at once)
  * Auto Completion for coding
  * Get (& Save) documents from OneDrive, Drive, DropBox, etc
@@ -44,5 +44,4 @@ Thanks to raphaelhanneken for the helpful [TextView with line numbers](https://g
 helped shape the original Textor & all future contributers to Textor++!
 
 ## License
-
 This project is available under the MIT license. See the LICENSE file for more info.
