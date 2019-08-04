@@ -95,6 +95,7 @@ class DocumentViewController: UIViewController {
 		self.navigationController?.view.tintColor = .appTintColor
 		self.view.tintColor = .appTintColor
 		
+		
 		updateTheme()
 
 		
@@ -158,6 +159,14 @@ class DocumentViewController: UIViewController {
 			
 		})
 		
+	}
+	
+	
+	override var keyCommands: [UIKeyCommand]? {
+		return [
+			UIKeyCommand(input: "f", modifierFlags: .command, action: #selector(activateFind)),
+			UIKeyCommand(input: "\t", modifierFlags: .shift, action: #selector(untab))
+		]
 	}
 	
 	private func updateTheme() {
@@ -271,6 +280,66 @@ class DocumentViewController: UIViewController {
 		textView.replace(textView.selectedTextRange!, withText: add)
 	}
 	
+	//this is triggered with a shift+tab on an external keyboard
+	//will go back the first spaces (tab or spaces) in that line
+	//order of operations tab -> tabSize # of spaces (if 0 then 4 spaces) -> whatever prefix spaces are left
+	@objc func untab(){
+		if textView.selectedRange.length == 0 {
+			let startingPos = textView.selectedRange.location
+			var pos = textView.selectedRange.location
+			//if the cursor is between the spaces, not necessarily after
+			for char in textView.text.suffix(textView.text.count-startingPos) {
+				if char != " " || char != "\t" {
+					pos+=1
+				} else {
+					break
+				}
+			}
+			let text = textView.text!
+			var rangeLoc = pos
+			var rangeLen = 0
+			var searchText = ""
+			//get the string for the line
+			for char in text.prefix(pos).reversed() {
+				if char != "\n" {
+					searchText = String(char) + searchText
+					rangeLoc-=1
+				} else {
+					break
+				}
+			}
+			//replace the beginning spaces
+			for char in searchText {
+				if (char == " ") {
+					rangeLen+=1
+					if rangeLen == tabSize || (tabSize == 0 && rangeLen == 4) { //found all the needed spaces
+						//if for some reason we are in tab mode and there are spaces there, remove 4 of them
+						if let range = NSRange(location: rangeLoc, length: rangeLen).toTextRange(textInput: textView) {
+							textView.replace(range, withText: "")
+						}
+						break
+					}
+				} else if (char == "\t") {
+					rangeLen+=1
+					if let range = NSRange(location: rangeLoc, length: rangeLen).toTextRange(textInput: textView) {
+						textView.replace(range, withText: "")
+					}
+					break
+				} else {
+					if let range = NSRange(location: rangeLoc, length: rangeLen).toTextRange(textInput: textView) {
+						textView.replace(range, withText: "")
+					}
+					break
+				}
+			}
+			//put the cursor in a good spot
+			let newSelectedRange = NSRange(location: startingPos-rangeLen, length: 0)
+			textView.selectedRange = newSelectedRange
+			//TODO: When removing the tabs/spaces at the front of the line, it may push you off into the next line
+			// instead just keep the cursor at the first position
+		}
+	}
+	
 	@objc func undoButtonPressed(button: UIBarButtonItem) {
 		textView.undoManager?.undo()
 		updateUndoButtons()
@@ -374,7 +443,7 @@ extension DocumentViewController {
 		textView.text = text
 	}
 	
-	func activateFind(){
+	@objc func activateFind(){
 		let bar = UIToolbar()
 		let up = UIBarButtonItem(title: "/\\", style: .plain, target: self, action: #selector(upButtonPressed))
 		let down = UIBarButtonItem(title: "\\/", style: .plain, target: self, action: #selector(downButtonPressed))
