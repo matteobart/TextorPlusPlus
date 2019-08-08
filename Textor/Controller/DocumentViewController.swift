@@ -72,6 +72,8 @@ class DocumentViewController: UIViewController {
 		let redo = UIBarButtonItem(title: "Redo", style: .plain, target: self, action: #selector(redoButtonPressed))
 		let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 		tab.tintColor = .appTintColor
+		undo.tintColor = .appTintColor
+		redo.tintColor = .appTintColor
 
 		if UserDefaultsController.shared.isDarkMode {
 			bar.barTintColor = .black
@@ -412,11 +414,16 @@ class DocumentViewController: UIViewController {
 	func removeAttributes(){
 		//ideally, we can remove attributes like below, and then manually trigger the rehighlight
 		//this needs to be here for when no syntax highlighting
-		textStorage.removeAttribute(NSAttributedString.Key.backgroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
-		textStorage.removeAttribute(NSAttributedString.Key.foregroundColor, range: NSRange(location: 0, length: textView.text.utf16.count))
+		let range = NSRange(location: 0, length: textView.text.utf16.count)
+		textStorage.removeAttribute(NSAttributedString.Key.backgroundColor, range: range)
+		textStorage.removeAttribute(NSAttributedString.Key.foregroundColor, range: range)
 		//if statement is needed here so that cursor doesn't move for non-coding mode
 		if syntaxLanguage != nil { //only needs to be done if highlightr is on
 			textView.text = textView.text //while stupid, this is the only way for us to manually call the highlightr
+		} else if UserDefaultsController.shared.isDarkMode { //if no syntax highlighting add some color back
+			textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: range)
+		} else { //isLightMode
+			textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: range)
 		}
 	}
 }
@@ -475,12 +482,23 @@ extension DocumentViewController {
 		let up = UIBarButtonItem(title: "/\\", style: .plain, target: self, action: #selector(upButtonPressed))
 		let down = UIBarButtonItem(title: "\\/", style: .plain, target: self, action: #selector(downButtonPressed))
 		let searchField = UISearchBar(frame: CGRect(x: 0, y: 0, width: 150, height: 20))
+		searchField.searchBarStyle = .minimal
 		searchField.delegate = self
 		let search = UIBarButtonItem(customView: searchField)
 		let done = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(searchBarDoneButtonPressed))
 		let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+		done.tintColor = .appTintColor
+		up.tintColor = .appTintColor
+		down.tintColor = .appTintColor
+		searchField.tintColor = .appTintColor
 		bar.items = [up, down, space, search, done]
 		bar.sizeToFit()
+		if UserDefaultsController.shared.isDarkMode {
+			bar.barTintColor = .black
+			searchField.barStyle = .black
+		} else {
+			bar.barTintColor = .white
+		}
 		textView.inputAccessoryView = bar
 		textView.reloadInputViews()
 		textView.becomeFirstResponder()

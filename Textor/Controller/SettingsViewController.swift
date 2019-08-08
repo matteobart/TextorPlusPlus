@@ -184,7 +184,7 @@ class SettingsViewController: UITableViewController {
 			case 0:
 				// Review on App Store
 				//CHANGE
-				let appId = "1330406995"
+				let appId = "1475386716"
 				url = "itms-apps://itunes.apple.com/us/app/textor/id\(appId)?action=write-review"
 			case 1:
 				// GitHub
