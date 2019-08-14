@@ -121,9 +121,11 @@ extension DocumentBrowserViewController: UIDocumentBrowserViewControllerDelegate
 		alert.addTextField { (textField) in
 			textField.placeholder = "quicksort.py"
 		}
-		
-		
 		// 3. Grab the value from the text field, and print it when the user clicks OK.
+		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler:{ [weak alert] (_) in
+			importHandler(nil, .none) //this needs to be called as per the documentation
+			alert?.dismiss(animated: true, completion: nil)
+		}))
 		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
 			let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
 			var userChoosenFilename = textField?.text ?? "Untitled.txt"
@@ -135,7 +137,6 @@ extension DocumentBrowserViewController: UIDocumentBrowserViewControllerDelegate
 			self.finish(controller, filename: userChoosenFilename, didRequestDocumentCreationWithHandler: importHandler)
 
 		}))
-		
 		// 4. Present the alert.
 		self.present(alert, animated: true, completion: nil)
 	}
