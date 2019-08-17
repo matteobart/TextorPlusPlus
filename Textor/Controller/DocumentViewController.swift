@@ -150,8 +150,10 @@ class DocumentViewController: UIViewController {
 				
 				self.textView.text = self.document?.text
 				
+				//Legacy Code- Removed because this causes Issue #14- Long text doesn't completely load on first tap
 				// Calculate layout for full document, so scrolling is smooth.
-				self.textView.layoutManager.ensureLayout(forCharacterRange: NSRange(location: 0, length: self.textView.text.count))
+				//self.textView.layoutManager.ensureLayout(forCharacterRange: NSRange(location: 0, length: self.textView.text.count))
+				//If everything works, this will eventually be deleted
 				
 				if self.textView.text.isEmpty {
 					self.textView.becomeFirstResponder()
@@ -376,21 +378,73 @@ class DocumentViewController: UIViewController {
 		if filename.hasExtension() {
 			let ext = filename.getExtension()
 			switch ext.lowercased(){
-			case "py", "pyc":
+			case "py", "pyc", "pyx":
 				return "python"
-			case "java":
+			case "java", "class":
 				return "java"
-			case "cpp":
+			case "cpp", "h", "cc":
 				return "cpp"
 			case "c":
 				return "c"
-			case "swift":
+			case "swift", "playground":
 				return "swift"
+			case "sh":
+				return "bash"
+			case "erl":
+				return "erlang"
+			case "fs", "fsi", "fsscript", "fsx":
+				return "fsharp"
+			case "has", "hs":
+				return "haskell"
+			case "ino":
+				return "arduino"
+			case "lua":
+				return "lua"
+			case "markdown":
+				return "markdown"
+			case "mak":
+				return "makefile"
+			case "yaml", "yml":
+				return "yaml"
+			case "pl", "pm":
+				return "perl"
+			case "r":
+				return "r"
+			case "rb", "rbw":
+				return "ruby"
+			case "xml":
+				return "xml"
+			case "pde":
+				return "processing"
+			case "rs":
+				return "rust"
+			case "ml":
+				return "ocaml"
+			case "scm", "sps", "sls", "sld", "rkt":
+				return "scheme"
+			case "html":
+				return "htmlbars"
+			case "json":
+				return "json"
+			case "css":
+				return "css"
+			case "go", "gotemplate":
+				return "go"
+			case "php":
+				return "php"
+			case "cs":
+				return "cs"
+			case "ts":
+				return "typescript"
+			case "m":
+				return "objectivec"
 			default:
 				return nil
-				
 			}
 		} else {
+			if filename.lowercased() == "makefile" {
+				return "makefile"
+			}
 			return nil
 		}
 	}
