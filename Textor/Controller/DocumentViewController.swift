@@ -56,6 +56,12 @@ class DocumentViewController: UIViewController {
 		textView.translatesAutoresizingMaskIntoConstraints = false
         textView.contentMode = .redraw
         textView.alwaysBounceVertical = true
+		
+		if UserDefaultsController.shared.isCodingMode {
+			textView.smartDashesType = .no
+			textView.smartQuotesType = .no
+			textView.smartInsertDeleteType = .no
+		}
 
         //CONSTARINTS
 		let bSpace = NSLayoutConstraint(item: self.textView!, attribute: .bottom, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
@@ -665,9 +671,7 @@ extension DocumentViewController: UITextViewDelegate {
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
 		//first update the undo/redo button
 		updateUndoButtons()
-		
-		//check what they are typing, to see if you must
-		//change it
+		//check what they are typing, to see if you must change it
 		if UserDefaultsController.shared.isCodingMode {
 			if (text == "") { //so deleting works properly
 				return true
@@ -687,9 +691,11 @@ extension DocumentViewController: UITextViewDelegate {
 					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
 				}
 				return false
-			} else { //just make sure that there is no curly quotes
-				let newText = text.replacingOccurrences(of: "‘", with: "'").replacingOccurrences(of: "’", with: "'").replacingOccurrences(of: "“", with: "\"").replacingOccurrences(of: "”", with: "\"")
-				textView.replace(range.toTextRange(textInput: textView)!, withText: newText)
+			} else {
+				//manually add it ourselves
+				//we may not need to do it this, may be worth it to simply return true
+				//and then thoroughly test
+				textView.replace(range.toTextRange(textInput: textView)!, withText: text)
 				if syntaxLanguage == nil { //when no highlighting the methods won't be called
 					removeAttributes()
 					didHighlight(NSRange(location: 0, length: textView.text.count), success: false)
