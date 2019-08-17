@@ -16,12 +16,6 @@ extension String {
 		print (split.first!.description)
 		return split.first?.description ?? ""
 		
-//		if let fileNameWithoutExtension = NSURL(fileURLWithPath: self).deletingPathExtension?.lastPathComponent {
-//			print(fileNameWithoutExtension)
-//			return fileNameWithoutExtension
-//		} else {
-//			return ""
-//		}
 	}
 	
 	func hasExtension()->Bool {
@@ -29,9 +23,7 @@ extension String {
 	}
 	
 	func getExtension()->String {
-		
 		let split = self.split(separator: ".", maxSplits: 1)
-		print(split.last!.description)
 		return split.last?.description ?? ""
 	}
 

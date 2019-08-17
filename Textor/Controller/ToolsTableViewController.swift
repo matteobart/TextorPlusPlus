@@ -33,7 +33,6 @@ class ToolsTableViewController: UITableViewController {
 	
 	@IBAction func spacesSliderChanged(_ sender: UISlider) {
 		sender.value = sender.value.rounded()
-		print(sender.value)
 		if completeFilename != nil {
 			setSpacePreference(completeFilename: completeFilename!, pref: Int(sender.value))
 		}
@@ -94,11 +93,9 @@ class ToolsTableViewController: UITableViewController {
 		tableView.deselectRow(at: indexPath, animated: true)
 		switch (indexPath.section, indexPath.item) {
 		case (0, 0): //Find
-			print("Find")
 			documentVC?.activateFind()
 			self.dismiss(animated: true, completion: nil)
 		case (0, 1): //Find & Replace
-			print("FindNRepl")
 			//1. Create the alert controller.
 			let alert = UIAlertController(title: "Replace", message: "Specify what text you should replace", preferredStyle: .alert)
 			
@@ -129,7 +126,6 @@ class ToolsTableViewController: UITableViewController {
 			// 4. Present the alert.
 			self.present(alert, animated: true, completion: nil)
 		case (0, 2): //Document Statistics
-			print("Stats")
 			let statsVC = self.storyboard!.instantiateViewController(withIdentifier: "StatsViewController") as! StatisticsViewController
 			statsVC.text = documentVC!.textView.text
 			self.show(statsVC, sender: nil)
@@ -138,8 +134,7 @@ class ToolsTableViewController: UITableViewController {
 			langVC.completeFilename = completeFilename
 			self.show(langVC, sender: nil)
 		case (1, 1): //spacing
-			print("Spacing cell tapped")
-			//do nothing
+			() //do nothing
 		case (1, 2): //convert tabs to spaces
 			documentVC?.switchToSpaces(numOfSpaces: 4)
 			self.dismiss(animated: true, completion: nil)
@@ -153,7 +148,7 @@ class ToolsTableViewController: UITableViewController {
 			documentVC?.removeTrailingSpaces()
 			self.dismiss(animated: true, completion: nil)
 		default:
-			print("No selection")
+			() //do nothing
 		}
 	}
 
