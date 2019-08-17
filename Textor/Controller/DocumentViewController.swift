@@ -674,7 +674,14 @@ extension DocumentViewController: UITextViewDelegate {
 		//check what they are typing, to see if you must change it
 		if UserDefaultsController.shared.isCodingMode {
 			if (text == "") { //so deleting works properly
-				return true
+				//this needs to be checked and done like this, because when undoing a paste,
+				//it will try to double delete it
+				//testing the range will prevent against it
+				//any changes should be tested with command + v -> command + z
+				if let textRange = range.toTextRange(textInput: textView) {
+					textView.replace(textRange, withText: "")
+				}
+				return false
 			} else if (text == "\n") { //keep tabbing the same
 				let spaces = getBeginningSpacing(textView, spot: range.lowerBound)
 				textView.replace(range.toTextRange(textInput: textView)!, withText: "\n"+spaces)
