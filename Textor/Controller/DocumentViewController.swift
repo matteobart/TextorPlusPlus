@@ -149,6 +149,10 @@ class DocumentViewController: UIViewController {
 			if success {
 				
 				self.textView.text = self.document?.text
+				if self.syntaxLanguage == "python" { //this is a work around for Highlightr, when opening/pasting viewing
+					//larger documents that start with triple single quotes comments, will cause no highlighting
+					self.textView.attributedText = Highlightr()?.highlight(self.textView.text)
+				}
 				
 				//Legacy Code- Removed because this causes Issue #14- Long text doesn't completely load on first tap
 				// Calculate layout for full document, so scrolling is smooth.
@@ -474,16 +478,18 @@ class DocumentViewController: UIViewController {
 	func removeAttributes(){
 		//ideally, we can remove attributes like below, and then manually trigger the rehighlight
 		//this needs to be here for when no syntax highlighting
-		let range = NSRange(location: 0, length: textView.text.utf16.count)
-		textStorage.removeAttribute(NSAttributedString.Key.backgroundColor, range: range)
-		textStorage.removeAttribute(NSAttributedString.Key.foregroundColor, range: range)
-		//if statement is needed here so that cursor doesn't move for non-coding mode
-		if syntaxLanguage != nil { //only needs to be done if highlightr is on
-			textStorage.language = textStorage.language //while stupid, this is the best way for us to manually call the highlightr (most reliable)
-		} else if UserDefaultsController.shared.isDarkMode { //if no syntax highlighting add some color back
-			textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: range)
-		} else { //isLightMode
-			textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: range)
+		if syntaxLanguage == nil {
+			let range = NSRange(location: 0, length: textView.text.utf16.count)
+			textStorage.removeAttribute(NSAttributedString.Key.backgroundColor, range: range)
+			textStorage.removeAttribute(NSAttributedString.Key.foregroundColor, range: range)
+			if UserDefaultsController.shared.isDarkMode { //if no syntax highlighting add some color back
+				textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.white, range: range)
+			} else { //isLightMode
+				textStorage.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.black, range: range)
+			}
+		} else { //only needs to be done if highlightr is on
+			textStorage.language = textStorage.language
+			//while stupid, this is the best way for us to manually call the highlightr (most reliable)
 		}
 	}
 }
@@ -544,6 +550,7 @@ extension DocumentViewController {
 		let searchField = UISearchBar(frame: CGRect(x: 0, y: 0, width: 150, height: 20))
 		searchField.searchBarStyle = .minimal
 		searchField.delegate = self
+		searchField.autocapitalizationType = .none
 		let search = UIBarButtonItem(customView: searchField)
 		let done = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(searchBarDoneButtonPressed))
 		let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -561,8 +568,6 @@ extension DocumentViewController {
 		}
 		textView.inputAccessoryView = bar
 		textView.reloadInputViews()
-		textView.becomeFirstResponder()
-
 	}
 	
 	
@@ -660,6 +665,9 @@ extension DocumentViewController: HighlightDelegate {
 	//this is the place to add more color on top of the highlighting
 	func didHighlight(_ range: NSRange, success: Bool) {
 		//update the buttons here too
+		//textStorage.
+		
+		
 		updateUndoButtons()
 
 		//keep the highlighted text highlighted
@@ -673,21 +681,47 @@ extension DocumentViewController: HighlightDelegate {
 					
 					let searchString = searchBar.text ?? ""
 					let baseString = textView.text ?? ""
-					var regex: NSRegularExpression?
-					do {
-						try regex = NSRegularExpression(pattern: searchString, options: .caseInsensitive)
-					} catch {
-						regex = nil
+					
+					if baseString == "" || searchString == "" {
+						return
 					}
-					if regex != nil {
-						for match in (regex?.matches(in: baseString, options: [], range: NSRange(location: 0, length: baseString.utf16.count)))! {
-							var attrs: [NSAttributedString.Key : Any] = [:]
-							attrs[NSAttributedString.Key.backgroundColor] = UIColor.yellow
-							attrs[NSAttributedString.Key.foregroundColor] = UIColor.black
-							textStorage.addAttributes(attrs, range: match.range)
-							findRanges.append(match.range)
+					
+					//fill up findRanges
+					var searchIndex = 0
+					for i in 0..<baseString.count {
+						if baseString[i] == searchString[searchIndex] {
+							searchIndex += 1
+							if searchIndex == searchString.count {
+								findRanges.append(NSRange(location: i-searchIndex+1, length: searchString.count))
+								searchIndex = 0
+							}
+						} else {
+							searchIndex = 0
 						}
 					}
+					
+					//use the find ranges to add attributes
+					for range in findRanges {
+						var attrs: [NSAttributedString.Key : Any] = [:]
+						attrs[NSAttributedString.Key.backgroundColor] = UIColor.yellow
+						attrs[NSAttributedString.Key.foregroundColor] = UIColor.black
+						textStorage.addAttributes(attrs, range: range)
+					}
+//					var regex: NSRegularExpression?
+//					do {
+//						try regex = NSRegularExpression(pattern: searchString, options: .caseInsensitive)
+//					} catch {
+//						regex = nil
+//					}
+//					if regex != nil {
+//						for match in (regex?.matches(in: baseString, options: [], range: NSRange(location: 0, length: baseString.utf16.count)))! {
+//							var attrs: [NSAttributedString.Key : Any] = [:]
+//							attrs[NSAttributedString.Key.backgroundColor] = UIColor.yellow
+//							attrs[NSAttributedString.Key.foregroundColor] = UIColor.black
+//							textStorage.addAttributes(attrs, range: match.range)
+//							findRanges.append(match.range)
+//						}
+//					}
 				}
 			}
 		}
@@ -723,6 +757,7 @@ extension DocumentViewController: UITextViewDelegate {
 	
 	//this gets called when anything gets called is added to textview
 	func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+		
 		//first update the undo/redo button
 		updateUndoButtons()
 		//check what they are typing, to see if you must change it
@@ -803,5 +838,10 @@ extension NSRange {
 			return textInput.textRange(from: rangeStart, to: rangeEnd)
 		}
 		return nil
+	}
+}
+extension String {
+	subscript (i: Int) -> Character {
+		return self[index(startIndex, offsetBy: i)]
 	}
 }
