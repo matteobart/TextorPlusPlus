@@ -25,8 +25,11 @@ class DocumentBrowserViewController: UIDocumentBrowserViewController {
 		
         // Update the style of the UIDocumentBrowserViewController
         setTheme()
-
+		if #available(iOS 13.0, *) {
+			self.shouldShowFileExtensions = true
+		}
 		view.tintColor = .appTintColor
+		
 
 		let settingsBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "Settings"), style: .done, target: self, action: #selector(showSettings))
 		
@@ -102,7 +105,7 @@ class DocumentBrowserViewController: UIDocumentBrowserViewController {
 		documentViewController.title = documentURL.lastPathComponent
 
 		let navCon = UINavigationController(rootViewController: documentViewController)
-
+		navCon.modalPresentationStyle = .fullScreen
 		navCon.transitioningDelegate = self
 
         present(navCon, animated: true, completion: nil)
