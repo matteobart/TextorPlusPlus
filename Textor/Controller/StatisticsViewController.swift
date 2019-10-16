@@ -46,24 +46,6 @@ class StatisticsViewController: UIViewController {
 		numCharactersWSpacesLabel.text = numCharsWSpaces.description
 		numWordsLabel.text = numWords.description
 		numLinesLabel.text = numLines.description
-		
-		//update theme
-		
-		if UserDefaultsController.shared.isDarkMode { //only need to change on dark mode
-			statisticsLabel.textColor = .white
-			linesLabel.textColor = .white
-			wordsLabel.textColor = .white
-			characterWSpacesLabel.textColor = .white
-			characterWoSpacesLabel.textColor = .white
-			numLinesLabel.textColor = .white
-			numWordsLabel.textColor = .white
-			numCharactersWSpacesLabel.textColor = .white
-			numCharactersWoSpacesLabel.textColor = .white
-			countNoteLabel.textColor = .white
-			self.view.backgroundColor = .darkBackgroundColor
-			navigationController?.navigationBar.barStyle = .blackTranslucent
-		}
-		
 	}
 	
 	

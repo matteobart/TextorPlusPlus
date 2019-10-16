@@ -85,7 +85,6 @@ class SettingsViewController: UITableViewController {
 	}
 	@objc
 	func didChangeTheme() {
-
 		UIView.animate(withDuration: 0.3) {
 			self.updateTheme()
 		}
@@ -93,69 +92,27 @@ class SettingsViewController: UITableViewController {
 	}
 	
 	func updateTheme() {
-		
-		let theme = UserDefaultsController.shared.theme
-		/*
-		switch theme {
-		case .light:
-			tableView.backgroundColor = .groupTableViewBackground
-			navigationController?.navigationBar.barStyle = .default
-			tableView.separatorColor = .gray
-			
-		case .dark:
-			tableView.backgroundColor = .darkBackgroundColor
-			navigationController?.navigationBar.barStyle = .black
-			tableView.separatorColor = UIColor(white: 0.2, alpha: 1)
-
-		}
-		*/
 		navigationController?.navigationBar.tintColor = .appTintColor
 		for cell in tableView.visibleCells {
 			updateTheme(for: cell)
 		}
-		
 	}
 	
 	func updateTheme(for cell: UITableViewCell) {
-		
-		let theme = UserDefaultsController.shared.theme
-		/*
-		switch theme {
-		case .light:
-			cell.backgroundColor = .white
-			
-			for label in cell.subviewLabels() {
-				label.textColor = .black
-				label.highlightedTextColor = .white
-			}
-			
-		case .dark:
-			cell.backgroundColor = UIColor(white: 0.07, alpha: 1)
-			
-			for label in cell.subviewLabels() {
-				label.textColor = .white
-				label.highlightedTextColor = .black
-			}
-		}
-*/
 		for view in cell.subviews {
 			for subview in view.subviews {
 				for subsubview in subview.subviews {
-				if let s = subsubview as? UISwitch {
-					s.tintColor = .appTintColor
-					s.onTintColor = .appTintColor
-				}
+					if let s = subsubview as? UISwitch {
+						s.tintColor = .appTintColor
+						s.onTintColor = .appTintColor
+					}
 				}
 			}
-
 		}
-		
 	}
 
 	override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-		
 		updateTheme(for: cell)
-		
 	}
 	
 	override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {

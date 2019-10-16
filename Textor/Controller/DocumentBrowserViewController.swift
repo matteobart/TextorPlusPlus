@@ -44,12 +44,6 @@ class DocumentBrowserViewController: UIDocumentBrowserViewController {
 				UserDefaultsController.shared.isDarkMode = true;
 			}
 		}
-		/*
-		if UserDefaultsController.shared.isDarkMode {
-            self.browserUserInterfaceStyle = .dark
-        } else {
-            self.browserUserInterfaceStyle = .white
-		}*/
 		view.tintColor = .appTintColor
     }
 

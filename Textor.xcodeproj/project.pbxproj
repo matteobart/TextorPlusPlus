@@ -125,6 +125,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		A6F0C67E2357565A0066E004 /* Alt Icons */ = {
+			isa = PBXGroup;
+			children = (
+				A6F0C67A23568E5F0066E004 /* Icon-1@2x.png */,
+				A6F0C67B23568E600066E004 /* Icon-1@3x.png */,
+			);
+			path = "Alt Icons";
+			sourceTree = "<group>";
+		};
 		BE000C191FF9451F00D06B91 = {
 			isa = PBXGroup;
 			children = (
@@ -149,8 +158,7 @@
 		BE000C241FF9451F00D06B91 /* Textor */ = {
 			isa = PBXGroup;
 			children = (
-				A6F0C67A23568E5F0066E004 /* Icon-1@2x.png */,
-				A6F0C67B23568E600066E004 /* Icon-1@3x.png */,
+				A6F0C67E2357565A0066E004 /* Alt Icons */,
 				BED3CAB52054403D007968FF /* Screenshot files */,
 				BECE41022038DCF5004889F0 /* Model */,
 				BECE41012038DCED004889F0 /* Controller */,

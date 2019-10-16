@@ -81,13 +81,7 @@ class DocumentViewController: UIViewController {
 		undo.tintColor = .appTintColor
 		redo.tintColor = .appTintColor
 
-		/*
-		if UserDefaultsController.shared.isDarkMode {
-			bar.barTintColor = .black
-		} else {
-			bar.barTintColor = .white
-		}*/
-		//need to dot his manually here
+		//need to do this manually here
         undo.isEnabled = textView.undoManager?.canUndo ?? false
 		redo.isEnabled = textView.undoManager?.canRedo ?? false
 		
@@ -193,27 +187,11 @@ class DocumentViewController: UIViewController {
 	}
 	
 	private func updateTheme() {
-		
 		let fontName = UserDefaultsController.shared.font
 		let fontSize = UserDefaultsController.shared.fontSize
 		let font = UIFont(name: fontName, size: fontSize)!
 		textView.font = font
 		textStorage.highlightr.theme.setCodeFont(font)
-		/*
-		if UserDefaultsController.shared.isDarkMode {
-			textView.textColor = .white
-			textView.backgroundColor = .darkBackgroundColor
-			textView.keyboardAppearance = .dark
-			textView.indicatorStyle = .white
-			navigationController?.navigationBar.barStyle = .blackTranslucent
-		} else {
-			textView.textColor = .black
-			textView.backgroundColor = .white
-			textView.keyboardAppearance = .default
-		}*/
-		
-		self.view.backgroundColor = textView.backgroundColor
-		
 	}
 	
     override func viewWillAppear(_ animated: Bool) {
@@ -258,14 +236,6 @@ class DocumentViewController: UIViewController {
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-        //used to ask for review, commented during testing
-        /*
-		documentsClosed += 1
-		if !hasAskedForReview && documentsClosed >= 4 {
-			hasAskedForReview = true
-			SKStoreReviewController.requestReview()
-		}
-         */
 	}
 
 	@IBAction func shareDocument(_ sender: UIBarButtonItem) {
@@ -570,13 +540,6 @@ extension DocumentViewController {
 		searchField.tintColor = .appTintColor
 		bar.items = [up, down, space, search, done]
 		bar.sizeToFit()
-		/*
-		if UserDefaultsController.shared.isDarkMode {
-			bar.barTintColor = .black
-			searchField.barStyle = .black
-		} else {
-			bar.barTintColor = .white
-		}*/
 		textView.inputAccessoryView = bar
 		textView.reloadInputViews()
 	}

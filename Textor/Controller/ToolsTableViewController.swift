@@ -165,26 +165,6 @@ class ToolsTableViewController: UITableViewController {
 	
 	//THEME
 	func updateTheme() {
-		/*
-		let theme = UserDefaultsController.shared.theme
-		
-		switch theme {
-		case .light:
-			tableView.backgroundColor = .groupTableViewBackground
-				navigationController?.navigationBar.barStyle = .default
-			//navBar.barStyle = .default
-			tableView.separatorColor = .gray
-			
-			
-		case .dark:
-			
-			tableView.backgroundColor = .darkBackgroundColor
-			navigationController?.navigationBar.barStyle = .black
-			tableView.separatorColor = UIColor(white: 0.2, alpha: 1)
-			
-			
-		}
-*/
 		navigationController?.navigationBar.tintColor = .appTintColor
 		for cell in tableView.visibleCells {
 			updateTheme(for: cell)
@@ -194,28 +174,7 @@ class ToolsTableViewController: UITableViewController {
 	
 	
 	func updateTheme(for cell: UITableViewCell) {
-		/*
-		let theme = UserDefaultsController.shared.theme
-		
-		switch theme {
-		case .light:
-			cell.backgroundColor = .white
-			
-			for label in cell.subviewLabels() {
-				label.textColor = .black
-				label.highlightedTextColor = .white
-			}
-			
-		case .dark:
-			cell.backgroundColor = UIColor(white: 0.07, alpha: 1)
-			
-			for label in cell.subviewLabels() {
-				label.textColor = .white
-				label.highlightedTextColor = .black
-			}
-			
-		}
-		*/
+
 		for subview in cell.deepSubviews() {
 			if let view = subview as? UIImageView {
 				view.tintColor = .appTintColor
@@ -224,18 +183,6 @@ class ToolsTableViewController: UITableViewController {
 		
 	}
 	
-	//MORE THEME SETTINGS (DARK MODE SETTINGS)
-	override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-		if let header = view as? UITableViewHeaderFooterView {
-			/*
-			if UserDefaultsController.shared.isDarkMode {
-				header.textLabel?.textColor = .white
-				
-			} else {
-				header.textLabel?.textColor = .black
-			}*/
-		}
-	}
 	//END
 	
 	
