@@ -54,6 +54,7 @@ class FontPickerViewController: UITableViewController {
 	
 	func updateTheme() {
 		
+		/*
 		let theme = UserDefaultsController.shared.theme
 		
 		switch theme {
@@ -68,11 +69,12 @@ class FontPickerViewController: UITableViewController {
 			tableView.separatorColor = UIColor(white: 0.2, alpha: 1)
 			
 		}
+*/
 		
 	}
 	
 	func updateTheme(for cell: UITableViewCell) {
-		
+		/*
 		let theme = UserDefaultsController.shared.theme
 		
 		switch theme {
@@ -93,7 +95,7 @@ class FontPickerViewController: UITableViewController {
 			}
 			
 		}
-		
+		*/
 	}
 	
 	func searchFonts(searchText: String) {

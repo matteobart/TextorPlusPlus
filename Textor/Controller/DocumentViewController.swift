@@ -81,11 +81,12 @@ class DocumentViewController: UIViewController {
 		undo.tintColor = .appTintColor
 		redo.tintColor = .appTintColor
 
+		/*
 		if UserDefaultsController.shared.isDarkMode {
 			bar.barTintColor = .black
 		} else {
 			bar.barTintColor = .white
-		}
+		}*/
 		//need to dot his manually here
         undo.isEnabled = textView.undoManager?.canUndo ?? false
 		redo.isEnabled = textView.undoManager?.canRedo ?? false
@@ -198,6 +199,7 @@ class DocumentViewController: UIViewController {
 		let font = UIFont(name: fontName, size: fontSize)!
 		textView.font = font
 		textStorage.highlightr.theme.setCodeFont(font)
+		/*
 		if UserDefaultsController.shared.isDarkMode {
 			textView.textColor = .white
 			textView.backgroundColor = .darkBackgroundColor
@@ -208,7 +210,7 @@ class DocumentViewController: UIViewController {
 			textView.textColor = .black
 			textView.backgroundColor = .white
 			textView.keyboardAppearance = .default
-		}
+		}*/
 		
 		self.view.backgroundColor = textView.backgroundColor
 		
@@ -568,12 +570,13 @@ extension DocumentViewController {
 		searchField.tintColor = .appTintColor
 		bar.items = [up, down, space, search, done]
 		bar.sizeToFit()
+		/*
 		if UserDefaultsController.shared.isDarkMode {
 			bar.barTintColor = .black
 			searchField.barStyle = .black
 		} else {
 			bar.barTintColor = .white
-		}
+		}*/
 		textView.inputAccessoryView = bar
 		textView.reloadInputViews()
 	}

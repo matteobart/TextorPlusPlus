@@ -50,7 +50,7 @@ class SytanxTableViewController: UITableViewController {
 	}
 	
 	func updateTheme() {
-		
+		/*
 		let theme = UserDefaultsController.shared.theme
 		
 		switch theme {
@@ -65,13 +65,13 @@ class SytanxTableViewController: UITableViewController {
 			tableView.separatorColor = UIColor(white: 0.2, alpha: 1)
 			
 		}
-		
+		*/
 	}
 	
 	func updateTheme(for cell: UITableViewCell) {
 		
 		let theme = UserDefaultsController.shared.theme
-		
+		/*
 		switch theme {
 		case .light:
 			cell.backgroundColor = .clear
@@ -90,6 +90,7 @@ class SytanxTableViewController: UITableViewController {
 			}
 			
 		}
+*/
 		
 	}
 	

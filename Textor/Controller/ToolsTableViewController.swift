@@ -165,7 +165,7 @@ class ToolsTableViewController: UITableViewController {
 	
 	//THEME
 	func updateTheme() {
-		
+		/*
 		let theme = UserDefaultsController.shared.theme
 		
 		switch theme {
@@ -184,6 +184,8 @@ class ToolsTableViewController: UITableViewController {
 			
 			
 		}
+*/
+		navigationController?.navigationBar.tintColor = .appTintColor
 		for cell in tableView.visibleCells {
 			updateTheme(for: cell)
 		}
@@ -192,7 +194,7 @@ class ToolsTableViewController: UITableViewController {
 	
 	
 	func updateTheme(for cell: UITableViewCell) {
-		
+		/*
 		let theme = UserDefaultsController.shared.theme
 		
 		switch theme {
@@ -213,18 +215,25 @@ class ToolsTableViewController: UITableViewController {
 			}
 			
 		}
+		*/
+		for subview in cell.deepSubviews() {
+			if let view = subview as? UIImageView {
+				view.tintColor = .appTintColor
+			}
+		}
 		
 	}
 	
 	//MORE THEME SETTINGS (DARK MODE SETTINGS)
 	override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 		if let header = view as? UITableViewHeaderFooterView {
+			/*
 			if UserDefaultsController.shared.isDarkMode {
 				header.textLabel?.textColor = .white
 				
 			} else {
 				header.textLabel?.textColor = .black
-			}
+			}*/
 		}
 	}
 	//END

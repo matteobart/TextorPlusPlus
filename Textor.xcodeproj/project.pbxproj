@@ -12,6 +12,8 @@
 		A665307E22DA509F003A84BC /* LineNumberTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A665307D22DA509F003A84BC /* LineNumberTextView.swift */; };
 		A68D620322CE468500A2FA2F /* ToolsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68D620222CE468500A2FA2F /* ToolsTableViewController.swift */; };
 		A6E6E71722D1A78200C42ABE /* SytanxTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6E6E71622D1A78200C42ABE /* SytanxTableViewController.swift */; };
+		A6F0C67C23568E600066E004 /* Icon-1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A6F0C67A23568E5F0066E004 /* Icon-1@2x.png */; };
+		A6F0C67D23568E600066E004 /* Icon-1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = A6F0C67B23568E600066E004 /* Icon-1@3x.png */; };
 		BE000C261FF9451F00D06B91 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE000C251FF9451F00D06B91 /* AppDelegate.swift */; };
 		BE000C281FF9451F00D06B91 /* DocumentBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE000C271FF9451F00D06B91 /* DocumentBrowserViewController.swift */; };
 		BE000C2A1FF9451F00D06B91 /* DocumentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE000C291FF9451F00D06B91 /* DocumentViewController.swift */; };
@@ -58,6 +60,8 @@
 		A665307D22DA509F003A84BC /* LineNumberTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LineNumberTextView.swift; path = Textor/Helper/LineNumberTextView.swift; sourceTree = SOURCE_ROOT; };
 		A68D620222CE468500A2FA2F /* ToolsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsTableViewController.swift; sourceTree = "<group>"; };
 		A6E6E71622D1A78200C42ABE /* SytanxTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SytanxTableViewController.swift; sourceTree = "<group>"; };
+		A6F0C67A23568E5F0066E004 /* Icon-1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-1@2x.png"; sourceTree = "<group>"; };
+		A6F0C67B23568E600066E004 /* Icon-1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-1@3x.png"; sourceTree = "<group>"; };
 		BE000C221FF9451F00D06B91 /* Textor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Textor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE000C251FF9451F00D06B91 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE000C271FF9451F00D06B91 /* DocumentBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentBrowserViewController.swift; sourceTree = "<group>"; };
@@ -145,6 +149,8 @@
 		BE000C241FF9451F00D06B91 /* Textor */ = {
 			isa = PBXGroup;
 			children = (
+				A6F0C67A23568E5F0066E004 /* Icon-1@2x.png */,
+				A6F0C67B23568E600066E004 /* Icon-1@3x.png */,
 				BED3CAB52054403D007968FF /* Screenshot files */,
 				BECE41022038DCF5004889F0 /* Model */,
 				BECE41012038DCED004889F0 /* Controller */,
@@ -322,6 +328,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6F0C67C23568E600066E004 /* Icon-1@2x.png in Resources */,
+				A6F0C67D23568E600066E004 /* Icon-1@3x.png in Resources */,
 				BEC104E720546899009F56E7 /* Mouse.txt in Resources */,
 				BE000C341FF9451F00D06B91 /* LaunchScreen.storyboard in Resources */,
 				BEC104DF2054481F009F56E7 /* Planets.txt in Resources */,
@@ -575,7 +583,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Textor/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.3.4;
+				MARKETING_VERSION = 1.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.matteo.code;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -598,7 +606,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Textor/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.3.4;
+				MARKETING_VERSION = 1.3.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.matteo.code;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

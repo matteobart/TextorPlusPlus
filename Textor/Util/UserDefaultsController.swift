@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreGraphics
+import UIKit
 
 class UserDefaultsController {
 
@@ -50,7 +51,17 @@ class UserDefaultsController {
 			theme = newValue ? .dark : .light
 		}
 	}
-
+	
+	//to use this use the UIColor extension .appTintColor
+	var isClassicColors: Bool {
+		get {
+			return userDefaults.object(forKey: "classicColor") as? Bool ?? false
+		}
+		set {
+			userDefaults.set(newValue, forKey: "classicColor")
+		}
+	}
+	
 	var fontSize: CGFloat {
 		get {
 			return userDefaults.object(forKey: "fontSize") as? CGFloat ?? 17.0
@@ -125,4 +136,3 @@ func getSyntaxPreferences(completeFilename: String)->String? {
 	let dict = UserDefaultsController.shared.syntaxPreferences
 	return dict[completeFilename] ?? nil
 }
-

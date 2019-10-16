@@ -37,47 +37,23 @@ class DocumentBrowserViewController: UIDocumentBrowserViewController {
 	}
 
     @objc func setTheme() {
-
+		if #available(iOS 12.0, *) {
+			if traitCollection.userInterfaceStyle == .light {
+				UserDefaultsController.shared.isDarkMode = false;
+			} else {
+				UserDefaultsController.shared.isDarkMode = true;
+			}
+		}
+		/*
 		if UserDefaultsController.shared.isDarkMode {
             self.browserUserInterfaceStyle = .dark
         } else {
             self.browserUserInterfaceStyle = .white
-        }
-
+		}*/
+		view.tintColor = .appTintColor
     }
 
 	var snapshotDocumentIndex = 0
-
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-
-		if UserDefaultsController.shared.isFastlane {
-
-			var snapshotDocuments = ["Think different.txt", "Planets.txt", "Circle.svg"]
-
-			if snapshotDocumentIndex == 2 {
-				UserDefaultsController.shared.isDarkMode = true
-			} else {
-				UserDefaultsController.shared.isDarkMode = false
-			}
-
-			NotificationCenter.default.post(name: .themeChanged, object: nil)
-
-			if self.view.bounds.width > 600 {
-				snapshotDocuments.append("Pharaoh.txt")
-			} else {
-				snapshotDocuments.append("Mouse.txt")
-			}
-
-			let url = Bundle.main.url(forResource: snapshotDocuments[snapshotDocumentIndex], withExtension: nil)!
-
-			presentDocument(at: url)
-
-			snapshotDocumentIndex += 1
-
-		}
-
-	}
 
 	@objc
 	func showSettings() {

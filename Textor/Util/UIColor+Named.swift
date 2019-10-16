@@ -12,7 +12,7 @@ import UIKit
 extension UIColor {
 
 	static var appTintColor: UIColor {
-		return UIColor(named: "Tint Color")!
+		return (UserDefaultsController.shared.isClassicColors ? UIColor(named: "ClassicTintColor")! : UIColor(named: "TintColor")!)
 	}
 
 	static var darkBackgroundColor: UIColor {

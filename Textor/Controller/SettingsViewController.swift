@@ -16,6 +16,7 @@ class SettingsViewController: UITableViewController {
     @IBOutlet weak var darkThemeSwitch: UISwitch!
 	@IBOutlet weak var codingModeSwitch: UISwitch!
 	@IBOutlet weak var fontNameLabel: UILabel!
+	@IBOutlet weak var classicColorSwitch: UISwitch!
 	
 	
     override func viewDidLoad() {
@@ -26,15 +27,16 @@ class SettingsViewController: UITableViewController {
 		
         darkThemeSwitch.isOn = UserDefaultsController.shared.isDarkMode
 		codingModeSwitch.isOn = UserDefaultsController.shared.isCodingMode
+		classicColorSwitch.isOn = UserDefaultsController.shared.isClassicColors
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(didChangeTheme), name: .themeChanged, object: nil)
 		
-		updateTheme()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
+		updateTheme()
+
 		fontNameLabel.text = UserDefaultsController.shared.font
 		if let font =  UIFont(name: fontNameLabel.text!, size: 17) {
 			fontNameLabel.font = font
@@ -71,6 +73,16 @@ class SettingsViewController: UITableViewController {
 		UserDefaultsController.shared.isCodingMode = sender.isOn
 	}
 	
+	@IBAction func classicColorsChanged(_ sender: UISwitch) {
+		UserDefaultsController.shared.isClassicColors = sender.isOn
+        NotificationCenter.default.post(name: .themeChanged, object: nil)
+		if sender.isOn {
+			UIApplication.shared.setAlternateIconName("Icon-1")
+		} else {
+			UIApplication.shared.setAlternateIconName(nil)
+		}
+
+	}
 	@objc
 	func didChangeTheme() {
 
@@ -83,7 +95,7 @@ class SettingsViewController: UITableViewController {
 	func updateTheme() {
 		
 		let theme = UserDefaultsController.shared.theme
-		
+		/*
 		switch theme {
 		case .light:
 			tableView.backgroundColor = .groupTableViewBackground
@@ -96,7 +108,8 @@ class SettingsViewController: UITableViewController {
 			tableView.separatorColor = UIColor(white: 0.2, alpha: 1)
 
 		}
-		
+		*/
+		navigationController?.navigationBar.tintColor = .appTintColor
 		for cell in tableView.visibleCells {
 			updateTheme(for: cell)
 		}
@@ -106,7 +119,7 @@ class SettingsViewController: UITableViewController {
 	func updateTheme(for cell: UITableViewCell) {
 		
 		let theme = UserDefaultsController.shared.theme
-		
+		/*
 		switch theme {
 		case .light:
 			cell.backgroundColor = .white
@@ -123,7 +136,18 @@ class SettingsViewController: UITableViewController {
 				label.textColor = .white
 				label.highlightedTextColor = .black
 			}
-			
+		}
+*/
+		for view in cell.subviews {
+			for subview in view.subviews {
+				for subsubview in subview.subviews {
+				if let s = subsubview as? UISwitch {
+					s.tintColor = .appTintColor
+					s.onTintColor = .appTintColor
+				}
+				}
+			}
+
 		}
 		
 	}
