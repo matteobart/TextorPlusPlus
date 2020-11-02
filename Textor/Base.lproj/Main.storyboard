@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -46,7 +46,7 @@
                                     <action selector="shareDocument:" destination="M2k-L8-Olo" id="QEt-ZT-UuV"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="..." id="vEs-0l-0RO">
+                            <barButtonItem title="..." image="slider.horizontal.3" catalog="system" id="vEs-0l-0RO">
                                 <connections>
                                     <action selector="toolsButtonPressed:" destination="M2k-L8-Olo" id="qYn-6S-dQO"/>
                                 </connections>
@@ -206,15 +206,15 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ToolCell" rowHeight="60" id="sxN-GK-iUL">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ToolCell" rowHeight="60" id="sxN-GK-iUL">
                                         <rect key="frame" x="0.0" y="324" width="375" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sxN-GK-iUL" id="Xlh-ac-2eP">
-                                            <rect key="frame" x="0.0" y="0.0" width="348" height="60"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="60"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="be6-rb-kE5">
-                                                    <rect key="frame" x="16" y="5" width="316" height="50"/>
+                                                    <rect key="frame" x="16" y="5" width="343" height="50"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="decrease.quotelevel" translatesAutoresizingMaskIntoConstraints="NO" id="XwP-d3-Wcv">
                                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -232,7 +232,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="8" translatesAutoresizingMaskIntoConstraints="NO" id="Zcp-5N-tO8">
-                                                            <rect key="frame" x="213.5" y="0.0" width="104.5" height="51"/>
+                                                            <rect key="frame" x="213.5" y="0.0" width="131.5" height="51"/>
                                                             <connections>
                                                                 <action selector="spacesSliderChanged:" destination="j0i-I1-heb" eventType="valueChanged" id="CWk-F4-fjC"/>
                                                             </connections>
@@ -860,8 +860,9 @@
         <image name="doc.text.magnifyingglass" width="16" height="20"/>
         <image name="number" width="15" height="17"/>
         <image name="quote.bubble" width="19" height="18"/>
+        <image name="slider.horizontal.3" catalog="system" width="64" height="50"/>
         <namedColor name="TextColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </namedColor>
         <namedColor name="Tint Color">
             <color red="0.55294117647058827" green="0.30196078431372547" blue="0.90980392156862744" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

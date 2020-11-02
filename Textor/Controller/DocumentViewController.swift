@@ -64,11 +64,11 @@ class DocumentViewController: UIViewController {
 		}
 
         //CONSTARINTS
-		//let bSpace = NSLayoutConstraint(item: self.textView!, attribute: .bottom, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
-		//let tSpace = NSLayoutConstraint(item: self.textView!, attribute: .top, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .top, multiplier: 1, constant: 0)
-		//let lSpace = NSLayoutConstraint(item: self.textView!, attribute: .left, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .left, multiplier: 1, constant: 0)
-		//let rSpace = NSLayoutConstraint(item: self.textView!, attribute: .right, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .right, multiplier: 1, constant: 0)
-		//NSLayoutConstraint.activate([bSpace, tSpace, lSpace, rSpace])
+		let bSpace = NSLayoutConstraint(item: self.textView!, attribute: .bottom, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .bottom, multiplier: 1, constant: 0)
+		let tSpace = NSLayoutConstraint(item: self.textView!, attribute: .top, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .top, multiplier: 1, constant: 0)
+		let lSpace = NSLayoutConstraint(item: self.textView!, attribute: .left, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .left, multiplier: 1, constant: 0)
+		let rSpace = NSLayoutConstraint(item: self.textView!, attribute: .right, relatedBy: .equal, toItem: self.view.safeAreaLayoutGuide, attribute: .right, multiplier: 1, constant: 0)
+		NSLayoutConstraint.activate([bSpace, tSpace, lSpace, rSpace])
 		//END
         
         //SET UP TOOLBAR
@@ -119,24 +119,14 @@ class DocumentViewController: UIViewController {
 //				textView.contentInset.bottom = rect.height - self.view.safeAreaInsets.bottom
 //				textView.scrollIndicatorInsets.bottom = rect.height - self.view.safeAreaInsets.bottom
 //				END
-
 				let x = textView.frame.minX //this is important for taking care of the notch on X
 				let y = textView.frame.minY
 				if state.type == .didShow {
-					let frame = CGRect(x: x, y: y, width: textView.frame.width, height: self.view.frame.height - state.keyboardFrameEnd.height - y)
-					print(state.keyboardFrameEnd.height)
-					print(textView.frame.height)
-					print(frame.height)
-					print(y)
-					textView.frame = frame
+					textView.layer.frame = CGRect(x: x, y: y, width: textView.frame.width, height: self.view.frame.height - state.keyboardFrameEnd.height - y)
 				} else if state.type == .didHide {
-					let frame = CGRect(x: x, y: y, width: textView.frame.width, height: self.view.frame.height - y)
-					textView.layer.frame = frame
+					textView.layer.frame = CGRect(x: x, y: y, width: textView.frame.width, height: self.view.frame.height - y)
 				}
-				self.textView.setNeedsDisplay()
-				self.textView.setNeedsLayout()
 			}, completion: nil)
-			
 		}
 		
 		textView.text = ""
