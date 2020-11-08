@@ -69,7 +69,7 @@ class DocumentBrowserViewController: UIDocumentBrowserViewController {
 		let document = Document(fileURL: documentURL)
 		let documentViewController = UIStoryboard.main.documentViewController(document: document)
 
-		transitionController = self.transitionController(forDocumentURL: documentURL)
+		transitionController = self.transitionController(forDocumentAt: documentURL)
 		transitionController?.targetView = documentViewController.textView
 
 		documentViewController.title = documentURL.lastPathComponent
